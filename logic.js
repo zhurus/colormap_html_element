@@ -70,14 +70,46 @@
         isHovered(point) {
             return this.outlineRect().contains(point);
         }
-        translate(dx, dy) {
-            this.x += dx;
-            this.y += dy;
-        }
         setSelected(selected = true) {
             this.selected = selected;
         }
     }
+
+    class DraggableGPoint extends GPoint {
+        constructor(x, y) {
+            super(x, y);
+        }
+        translate(dx, dy) {
+            this.x += dx;
+            this.y += dy;
+        }
+        moveTo(x, y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    class PointWithLimits extends DraggableGPoint {
+        constructor(x, y) {
+            super(x, y);
+            this.limitingRect = null;
+        }
+        translate(dx, dy) {
+            let newPos = new Point(this.x + dx, this.y);
+            if(this.limitingRect.contains(newPos))
+                super.translate(dx, 0);
+            newPos.y += dy;
+            if(this.limitingRect.contains(newPos))
+                super.translate(0, dy);
+        }
+        moveTo(x, y) {
+            if(this.limitingRect.contains(new Point(x, this.y)))
+                this.x = x;
+            if(this.limitingRect.contains(new Point(this.x, y)))
+                this.y = y;
+        }
+    }
+
 
     class Scene {
         constructor(canvasDom) {
@@ -124,9 +156,9 @@
             if(point)
                 point.setSelected();
         }
-        moveSelected(dx, dy) {
+        moveSelectedTo(x, y) {
             if(this.selectedPoint)
-                this.selectedPoint.translate(dx, dy);
+                this.selectedPoint.moveTo(x, y);
         }
     }
 
@@ -134,7 +166,8 @@
     canvasJQ[0].width = canvasJQ.width();
     canvasJQ[0].height = canvasJQ.height();
     let scene = new Scene(canvasJQ[0]);
-    let p = new GPoint(100, 50);
+    let p = new PointWithLimits(250, 250);
+    p.limitingRect = new Rect(100, 100, 300, 300);
     scene.addItem(p);
     scene.draw();
 
@@ -156,9 +189,9 @@
     canvasJQ.mouseup(() => mouseClicked = false);
     canvasJQ.mousemove((e)=>{
         if(mouseClicked) {
-            let dx = e.originalEvent.movementX;
-            let dy = e.originalEvent.movementY;
-            scene.moveSelected(dx, dy);
+            let x = e.originalEvent.offsetX;
+            let y = e.originalEvent.offsetY;
+            scene.moveSelectedTo(x, y);
             scene.repaint();
         }
     });
