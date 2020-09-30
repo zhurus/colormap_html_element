@@ -42,8 +42,8 @@
 
 
     class GrPoint extends Point {
-        static width = 20;
-        static height = 20;
+        static width = 10;
+        static height = 10;
 
         constructor(x, y) {
             super(x, y);
@@ -51,7 +51,7 @@
         }
         draw(scene) {
             let ctx = scene.canvasDom.getContext("2d");
-            ctx.strokeStyle = this.selected? "red" : "black";
+            ctx.strokeStyle = this.selected? "green" : "black";
             ctx.strokeRect(
                 this.x - GrPoint.width/2,
                 this.y - GrPoint.height/2,
@@ -111,44 +111,30 @@
     }
 
 
-    class Line {
-        constructor(point1, point2) {
-            this.point1 = point1;
-            this.point2 = point2;
-        }
-    }
-
-
-    class GrLine extends Line {
-        constructor(point1, point2) {
-            super(point1, point2);
-        }
-        draw(scene) {
-            let ctx = scene.canvasDom.getContext("2d");
-            ctx.strokeStyle = "black";
-            ctx.beginPath();
-            ctx.moveTo(this.point1.x, this.point1.y);
-            ctx.lineTo(this.point2.x, this.point2.y);
-            ctx.stroke();
-        }
-    }
-
-
     class Scene {
         constructor(canvasDom) {
-            this.items = [];
+            this.points = [];
             this.canvasDom = canvasDom;
             
             this.pointerInside = false;
             this.selectedPoint = null;
         }
-        addItem(item) {
-            this.items.push(item);
-        }
         draw() {
             if(this.canvasDom) {
-                this.items.forEach(i => i.draw(this));
+                this.points.forEach((item, index, arr) => {
+                    item.draw(this);
+                    if(index != 0)
+                        this.drawLine(arr[index - 1], arr[index]);
+                }, this);
             }
+        }
+        drawLine(point1, point2) {
+            let ctx = this.canvasDom.getContext("2d");
+            ctx.strokeStyle = "black";
+            ctx.beginPath();
+            ctx.moveTo(point1.x, point1.y);
+            ctx.lineTo(point2.x, point2.y);
+            ctx.stroke();
         }
         repaint() {
             if(this.canvasDom) {
@@ -157,14 +143,14 @@
             }
         }
         checkContaining(point) {
-            this.hoverPoint = this.items.find(item => {
+            this.hoverPoint = this.points.find(item => {
                 if(item instanceof GrPoint) {
                     return item.isHovered(point);
                 }
             });
         }
         hoverPoint(pointerPos) {
-            return this.items.find(item => {
+            return this.points.find(item => {
                 if(item instanceof GrPoint)
                     return item.isHovered(pointerPos);
                 else
@@ -184,47 +170,115 @@
                 this.selectedPoint.moveTo(x, y);
         }
         contains(item) {
-            return this.items.some(i => i == item);
+            return this.points.some(i => i == item);
+        }
+        addItem(item) {
+            this.points.push(item);
+            this.points = this.points.sort((i1, i2) => i1.x - i2.x);
+        }
+        removeItem(item) {
+            if(!item)
+                return;
+            let itemIndex = this.points.findIndex(i => item == i);
+            if(itemIndex == -1)
+                return;
+            
+            if(item == this.selectedPoint)
+                this.selectedPoint = item;
+            this.points.splice(itemIndex, 1);
         }
     }
 
-    canvasJQ = $("#opacity-editor");
-    canvasJQ[0].width = canvasJQ.width();
-    canvasJQ[0].height = canvasJQ.height();
-    let scene = new Scene(canvasJQ[0]);
-    let p1 = new PointWithLimits(250, 250);
-    let p2 = new PointWithLimits(300, 250);
-    let l = new GrLine(p1, p2);
-    p1.limitingRect = new Rect(100, 100, 300, 300);
-    p2.limitingRect = new Rect(100, 100, 300, 300);
-    scene.addItem(p1);
-    scene.addItem(p2);
-    scene.addItem(l);
-    scene.draw();
 
-    let mouseClicked = false;
-    canvasJQ.mouseover(()=>{
-        scene.pointerInside = true;        
-    });
-    canvasJQ.mouseleave(()=>{
-        scene.pointerInside = false;
-    });
+    class OpacityEditor {
+        constructor() {
+            this.canvasDom = $("#opacity-editor")[0];
+            this.scene = new Scene(this.canvasDom);
 
-    canvasJQ.mousedown((e)=>{
-        mouseClicked = true;
-        let pointerPos = new Point(e.offsetX, e.offsetY);
-        let p = scene.hoverPoint(pointerPos);
-        scene.selectPoint(p? p : null);
-        scene.repaint();
-    });
-    canvasJQ.mouseup(() => mouseClicked = false);
-    canvasJQ.mousemove((e)=>{
-        if(mouseClicked) {
-            let x = e.originalEvent.offsetX;
-            let y = e.originalEvent.offsetY;
-            scene.moveSelectedTo(x, y);
-            scene.repaint();
+            this.points = [];
+            this.selectedPointIndex = null;
+            this.init();            
+            this.mousePressed = false;
         }
-    });
+        init() {
+            let canvasJQ = $(this.canvasDom);
+            this.canvasDom.width = canvasJQ.width();
+            this.canvasDom.height = canvasJQ.height();
+            let self = this;
+            // canvasJQ.mouseover(e => self.mousein = true);
+            // canvasJQ.mouseleave(e => self.mousein = false);
+            canvasJQ.mousedown(e => self.mousedown(e.offsetX, e.offsetY));
+            canvasJQ.mouseup(e => self.mouseup(e.offsetX, e.offsetY));
+            canvasJQ.mousemove(e => self.mouseMoved(
+                e.offsetX, e.offsetY,
+                e.originalEvent.movementX, e.originalEvent.movementY));
+        }
+        emplacePoint(x, y) {
+            let point = this.points.find(p => {
+                if(x < p.x - GrPoint.width / 2)
+                    return false;
+                if(x > p.x + GrPoint.width / 2)
+                    return false;
+                return true;
+            });
+            if(!point) {
+                point = new PointWithLimits(x, y);
+                this.addPoint(point);
+            }
+        }
+        addPoint(point) {
+            this.points.push(point);
+            this.scene.addItem(point);
+            this.scene.selectPoint(point);
+        }
+        mousedown(x, y) {
+            this.mousePressed = true;
 
+            let point = this.points.find(p => {
+                if(x < p.x - GrPoint.width / 2)
+                    return false;
+                if(x > p.x + GrPoint.width / 2)
+                    return false;
+                return true;
+            });
+            if(point) {
+                if(point.outlineRect().contains(new Point(x, y))) {
+                    this.selectedPoint = point;
+                    this.scene.selectPoint(point);
+                }
+            } else {
+                this.emplacePoint(x, y);
+            }
+            this.scene.repaint();
+        }
+        mouseup(x, y) {
+            this.mousePressed = false;
+        }
+        mouseMoved(x, y, dx, dy) {
+            if(!this.mousePressed)
+                return;
+            if(this.selectedPoint) {
+                this.selectedPoint.x = x;
+                this.selectedPoint.y = y;
+            }
+            this.scene.repaint();
+        }
+        getValues() {
+            // TODO
+        }
+        getPoint(x, y) {
+            return this.points.find(gp => gp.outlineRect().contains(new Point(x,y)));
+        }
+        removeSelectedPoint() {
+            if(!this.selectedPoint)
+                return;
+            this.scene.removeItem(this.selectedPoint);
+            let index = this.points.findIndex(p => p == this.selectedPoint);
+            this.selectedPoint = null;
+            if(index != -1)
+                this.points.splice(index, 1);
+        }
+    }
+
+    let opacityEditor = new OpacityEditor();
 })()
