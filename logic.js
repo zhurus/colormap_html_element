@@ -41,7 +41,7 @@
     }
 
 
-    class GPoint extends Point {
+    class GrPoint extends Point {
         static width = 20;
         static height = 20;
 
@@ -53,18 +53,18 @@
             let ctx = scene.canvasDom.getContext("2d");
             ctx.strokeStyle = this.selected? "red" : "black";
             ctx.strokeRect(
-                this.x - GPoint.width/2,
-                this.y - GPoint.height/2,
-                GPoint.width,
-                GPoint.height
+                this.x - GrPoint.width/2,
+                this.y - GrPoint.height/2,
+                GrPoint.width,
+                GrPoint.height
             );
         }
         outlineRect() {
             return new Rect(
-                this.x - GPoint.width/2,
-                this.y - GPoint.height/2,
-                GPoint.width,
-                GPoint.height
+                this.x - GrPoint.width/2,
+                this.y - GrPoint.height/2,
+                GrPoint.width,
+                GrPoint.height
             );
         }
         isHovered(point) {
@@ -75,7 +75,7 @@
         }
     }
 
-    class DraggableGPoint extends GPoint {
+    class DraggableGrPoint extends GrPoint {
         constructor(x, y) {
             super(x, y);
         }
@@ -89,7 +89,7 @@
         }
     }
 
-    class PointWithLimits extends DraggableGPoint {
+    class PointWithLimits extends DraggableGrPoint {
         constructor(x, y) {
             super(x, y);
             this.limitingRect = null;
@@ -107,6 +107,29 @@
                 this.x = x;
             if(this.limitingRect.contains(new Point(this.x, y)))
                 this.y = y;
+        }
+    }
+
+
+    class Line {
+        constructor(point1, point2) {
+            this.point1 = point1;
+            this.point2 = point2;
+        }
+    }
+
+
+    class GrLine extends Line {
+        constructor(point1, point2) {
+            super(point1, point2);
+        }
+        draw(scene) {
+            let ctx = scene.canvasDom.getContext("2d");
+            ctx.strokeStyle = "black";
+            ctx.beginPath();
+            ctx.moveTo(this.point1.x, this.point1.y);
+            ctx.lineTo(this.point2.x, this.point2.y);
+            ctx.stroke();
         }
     }
 
@@ -135,14 +158,14 @@
         }
         checkContaining(point) {
             this.hoverPoint = this.items.find(item => {
-                if(item instanceof GPoint) {
+                if(item instanceof GrPoint) {
                     return item.isHovered(point);
                 }
             });
         }
         hoverPoint(pointerPos) {
             return this.items.find(item => {
-                if(item instanceof GPoint)
+                if(item instanceof GrPoint)
                     return item.isHovered(pointerPos);
                 else
                     return false;
@@ -160,15 +183,23 @@
             if(this.selectedPoint)
                 this.selectedPoint.moveTo(x, y);
         }
+        contains(item) {
+            return this.items.some(i => i == item);
+        }
     }
 
     canvasJQ = $("#opacity-editor");
     canvasJQ[0].width = canvasJQ.width();
     canvasJQ[0].height = canvasJQ.height();
     let scene = new Scene(canvasJQ[0]);
-    let p = new PointWithLimits(250, 250);
-    p.limitingRect = new Rect(100, 100, 300, 300);
-    scene.addItem(p);
+    let p1 = new PointWithLimits(250, 250);
+    let p2 = new PointWithLimits(300, 250);
+    let l = new GrLine(p1, p2);
+    p1.limitingRect = new Rect(100, 100, 300, 300);
+    p2.limitingRect = new Rect(100, 100, 300, 300);
+    scene.addItem(p1);
+    scene.addItem(p2);
+    scene.addItem(l);
     scene.draw();
 
     let mouseClicked = false;
