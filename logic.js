@@ -120,6 +120,7 @@
             this.selectedPoint = null;
         }
         draw() {
+            this.points = this.points.sort((i1, i2) => i1.x - i2.x);
             if(this.canvasDom) {
                 this.points.forEach((item, index, arr) => {
                     item.draw(this);
@@ -174,7 +175,6 @@
         }
         addItem(item) {
             this.points.push(item);
-            this.points = this.points.sort((i1, i2) => i1.x - i2.x);
         }
         removeItem(item) {
             if(!item)
@@ -264,7 +264,11 @@
             this.scene.repaint();
         }
         getValues() {
-            // TODO
+            let w = $(this.canvasDom).width();
+            let h = $(this.canvasDom).height();
+            return this.points
+                .sort((p1, p2) => p1.x - p2.x)
+                .map(p => [p.x/w, 1-p.y/h]);
         }
         getPoint(x, y) {
             return this.points.find(gp => gp.outlineRect().contains(new Point(x,y)));
