@@ -104,35 +104,76 @@
     class PointWithLimits extends DraggableGrPoint {
         constructor(x, y) {
             super(x, y);
-            this.limitingRect = null;
+            this.minX = null;
+            this.maxX = null;
+            this.minY = null;
+            this.maxY = null;
+        }
+        setMinX(minX) {
+            this.minX = minX;
+            if(this.maxX != null && minX >= this.maxX)
+                this.maxX = minX;
+            if(this.x < minX)
+                this.x = minX;
+        }
+        setMaxX(maxX) {
+            this.maxX = maxX;
+            if(this.minX != null && maxX <= this.minX)
+                this.minX = maxX;
+            if(this.x > maxX)
+                this.x = maxX;
+        }
+        setMinY(minY) {
+            this.minY = minY;
+            if(this.maxY != null && minY >= this.maxY)
+                this.maxY = minY;
+            if(this.y < minY)
+                this.y = minY;
+        }
+        setMaxY(maxY) {
+            this.maxY = maxY;
+            if(this.minY != null && maxY <= this.minY)
+                this.minY = maxY;
+            if(this.y > maxY)
+                this.y = maxY;
+        }
+        setFixedX(x) {
+            this.x = x;
+            this.minX = x;
+            this.maxX = x;
         }
         translate(dx, dy) {
-            let newPos = new Point(this.x + dx, this.y);
-            if(this.limitingRect.contains(newPos))
-                super.translate(dx, 0);
-            newPos.y += dy;
-            if(this.limitingRect.contains(newPos))
-                super.translate(0, dy);
+            let newX = this.x + dx;
+            let newY = this.y + dy;
+            this.moveTo(newX, newY);
         }
         moveTo(x, y) {
-            if(!this.limitingRect || this.limitingRect.contains(new Point(x, y))) {
-                this.x = x;
-                this.y = y;
-                return;
-            }
-            if(x < this.limitingRect.left())
-                this.x = this.limitingRect.left();
-            else if(x > this.limitingRect.right())
-                this.x = this.limitingRect.right();
-            else
-                this.x = x;
-            if(y < this.limitingRect.bottom()) {
-                this.y = this.limitingRect.bottom();
-            }
-            else if(y > this.limitingRect.top())
-                this.y = this.limitingRect.top();
-            else
-                this.y = y;
+            let fitVal = (val, range) => {
+                if(range[0] != null && range[1] != null) {
+                    if(val >= range[0] && val <= range[1])
+                        return val;
+                    else if(val < this.minX)
+                        return range[0];
+                    else if(val > range[1])
+                        return range[1];
+                }
+                else if(range[0] != null) {
+                    if(val > range[0])
+                        return val;
+                    else
+                        return range[0];
+                }
+                else if(range[1] != null) {
+                    if(val < range[1])
+                        return val;
+                    else
+                        return range[1];
+                }
+                else
+                    return val;
+            };
+            this.x = fitVal(x, [this.minX, this.maxX]);
+            this.y = fitVal(y, [this.minY, this.maxY]);
         }
     }
 
@@ -252,6 +293,22 @@
                 let dy = e.originalEvent.movementY;
                 self.mouseMoved(x, y, dx, dy);
             });
+
+            
+            let p1 = new PointWithLimits(0, this.canvasDom.height);
+            p1.setFixedX(0);
+            p1.setMinY(0);
+            p1.setMaxY(this.canvasDom.height);
+            p1.y = this.canvasDom.height/2;
+            this.addPoint(p1);
+            this.scene.repaint();
+            let p2 = new PointWithLimits(0, this.canvasDom.height);
+            p2.setFixedX(this.canvasDom.width);
+            p2.setMinY(0);
+            p2.setMaxY(this.canvasDom.height);
+            p2.y = this.canvasDom.height/2;
+            this.addPoint(p2);
+            this.scene.repaint();
         }
         emplacePoint(x, y) {
             let point = this.points.find(p => {
@@ -263,7 +320,10 @@
             });
             if(!point) {
                 point = new PointWithLimits(x, y);
-                point.limitingRect = new Rect(0, 0, this.canvasDom.width, this.canvasDom.height);
+                point.setMinX(0);
+                point.setMaxX(this.canvasDom.width);
+                point.setMinY(0);
+                point.setMaxY(this.canvasDom.height);
                 this.addPoint(point);
             }
             return point;
