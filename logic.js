@@ -25,6 +25,18 @@
         rightTop() {
             return new Point(this.x + this.width, this.y + this.height);
         }
+        left() {
+            return this.x;
+        }
+        right() {
+            return this.x + this.width;
+        }
+        top() {
+            return this.y + this.height;
+        }
+        bottom() {
+            return this.y;
+        }
         intersects(otherRect) {
             return this.contains(otherRect.leftBottom()) && 
                 this.contains(otherRect.rightBottom()) &&
@@ -103,9 +115,23 @@
                 super.translate(0, dy);
         }
         moveTo(x, y) {
-            if(this.limitingRect.contains(new Point(x, this.y)))
+            if(!this.limitingRect || this.limitingRect.contains(new Point(x, y))) {
                 this.x = x;
-            if(this.limitingRect.contains(new Point(this.x, y)))
+                this.y = y;
+                return;
+            }
+            if(x < this.limitingRect.left())
+                this.x = this.limitingRect.left();
+            else if(x > this.limitingRect.right())
+                this.x = this.limitingRect.right();
+            else
+                this.x = x;
+            if(y < this.limitingRect.bottom()) {
+                this.y = this.limitingRect.bottom();
+            }
+            else if(y > this.limitingRect.top())
+                this.y = this.limitingRect.top();
+            else
                 this.y = y;
         }
     }
@@ -196,22 +222,36 @@
             this.scene = new Scene(this.canvasDom);
 
             this.points = [];
-            this.selectedPointIndex = null;
-            this.init();            
+            this.selectedPoint = {
+                point: null,
+                dragged: null
+            };
             this.mousePressed = false;
+            this.mousein = false;
+            this.init();
         }
         init() {
             let canvasJQ = $(this.canvasDom);
             this.canvasDom.width = canvasJQ.width();
             this.canvasDom.height = canvasJQ.height();
             let self = this;
-            // canvasJQ.mouseover(e => self.mousein = true);
-            // canvasJQ.mouseleave(e => self.mousein = false);
-            canvasJQ.mousedown(e => self.mousedown(e.offsetX, e.offsetY));
-            canvasJQ.mouseup(e => self.mouseup(e.offsetX, e.offsetY));
-            canvasJQ.mousemove(e => self.mouseMoved(
-                e.offsetX, e.offsetY,
-                e.originalEvent.movementX, e.originalEvent.movementY));
+            canvasJQ.mouseover(e => self.mousein = true);
+            canvasJQ.mouseleave(e => self.mousein = false);
+            
+            $(document).mousedown(e => {
+                if(!this.mousein)
+                    return;
+                self.mousedown(e.offsetX, e.offsetY)
+            });
+            $(document).mouseup(e => self.mouseup(e.offsetX, e.offsetY));
+            $(document).mousemove(e => {
+                let pos = $(self.canvasDom).position();
+                let x = e.pageX - pos.left;
+                let y = e.pageY - pos.top;
+                let dx = e.originalEvent.movementX;
+                let dy = e.originalEvent.movementY;
+                self.mouseMoved(x, y, dx, dy);
+            });
         }
         emplacePoint(x, y) {
             let point = this.points.find(p => {
@@ -223,8 +263,10 @@
             });
             if(!point) {
                 point = new PointWithLimits(x, y);
+                point.limitingRect = new Rect(0, 0, this.canvasDom.width, this.canvasDom.height);
                 this.addPoint(point);
             }
+            return point;
         }
         addPoint(point) {
             this.points.push(point);
@@ -232,8 +274,9 @@
             this.scene.selectPoint(point);
         }
         mousedown(x, y) {
+            if(!this.mousein)
+                return;
             this.mousePressed = true;
-
             let point = this.points.find(p => {
                 if(x < p.x - GrPoint.width / 2)
                     return false;
@@ -243,24 +286,27 @@
             });
             if(point) {
                 if(point.outlineRect().contains(new Point(x, y))) {
-                    this.selectedPoint = point;
+                    this.selectedPoint.point = point;
+                    this.selectedPoint.dragged = true;
                     this.scene.selectPoint(point);
                 }
             } else {
-                this.emplacePoint(x, y);
+                this.selectedPoint.point = this.emplacePoint(x, y);
+                this.selectedPoint.dragged = true;
             }
             this.scene.repaint();
         }
         mouseup(x, y) {
             this.mousePressed = false;
+            if(this.selectedPoint)
+                this.selectedPoint.dragged = false;
         }
         mouseMoved(x, y, dx, dy) {
             if(!this.mousePressed)
                 return;
-            if(this.selectedPoint) {
-                this.selectedPoint.x = x;
-                this.selectedPoint.y = y;
-            }
+            if(!this.selectedPoint.point && !this.selectedPoint.dragged)
+                return;
+            this.selectedPoint.point.moveTo(x, y);
             this.scene.repaint();
         }
         getValues() {
@@ -274,15 +320,18 @@
             return this.points.find(gp => gp.outlineRect().contains(new Point(x,y)));
         }
         removeSelectedPoint() {
-            if(!this.selectedPoint)
+            if(!this.selectedPoint.point)
                 return;
-            this.scene.removeItem(this.selectedPoint);
-            let index = this.points.findIndex(p => p == this.selectedPoint);
-            this.selectedPoint = null;
+            this.scene.removeItem(this.selectedPoint.point);
+            let index = this.points.findIndex(p => p == this.selectedPoint.point);
             if(index != -1)
                 this.points.splice(index, 1);
+            this.selectedPoint.point = null;
+            this.scene.repaint();
         }
     }
 
     let opacityEditor = new OpacityEditor();
+    
+    $("#delete-selected-btn").click(e => opacityEditor.removeSelectedPoint());
 })()
