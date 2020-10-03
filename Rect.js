@@ -32,6 +32,12 @@ class Rect {
     bottom() {
         return this.y;
     }
+    center() {
+        return new Point(
+            this.x + this.width / 2,
+            this.y + this.height / 2
+        );
+    }
     intersects(otherRect) {
         return this.contains(otherRect.leftBottom()) && 
             this.contains(otherRect.rightBottom()) &&
@@ -51,19 +57,15 @@ class Rect {
 class GraphicsRect extends Rect {
     constructor(x, y, width, height) {
         super(x, y, width, height);
-        this.color = {
-            r: 0,
-            g: 0,
-            b: 0
-        };
+        this.color = new Rgb();
     }
     copy() {
         let cp = super.copy();
-        cp.color = {
-            r: this.color.r,
-            g: this.color.g,
-            b: this.color.b
-        };
+        cp.color = new Rgb(
+            this.color.r,
+            this.color.g,
+            this.color.b
+        );
         return cp;
     }
 }

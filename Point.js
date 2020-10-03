@@ -4,56 +4,14 @@ class Point {
         this.y = y;
     }
     copy() {
-        return new Point(this.x, this.y);
+        return Object.assign(Object.create(Object.getPrototypeOf(this)), this);
     }
 }
 
 class GraphicsPoint extends Point {
-    static width = 10;
-    static height = 10;
-
     constructor(x, y) {
         super(x, y);
-        this.color  = null;
         this.selected = false;
-    }
-    outlineRect() {
-        let rect;
-        let color = {
-            r: 0,
-            g: 0,
-            b: 0
-        };
-        if(this.selected) {
-            rect = new FilledRect(
-                this.x - GraphicsPoint.width/2,
-                this.y - GraphicsPoint.height/2,
-                GraphicsPoint.width,
-                GraphicsPoint.height
-            );
-        }
-        else {
-            rect = new StrokeRect(
-                this.x - GraphicsPoint.width/2,
-                this.y - GraphicsPoint.height/2,
-                GraphicsPoint.width,
-                GraphicsPoint.height
-            );
-        }
-        rect.color = color;
-        return rect;
-    }
-    isHovered(x, y) {
-        return this.outlineRect().contains(point);
-    }
-    copy() {
-        let c = Object.assign(Object.create(Object.getPrototypeOf(this)), this);
-        c.color = {
-            r: this.color.r,
-            g: this.color.g,
-            b: this.color.b,
-        };
-        return c;
     }
 }
 

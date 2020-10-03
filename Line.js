@@ -16,20 +16,12 @@ class Line {
 class GraphicsLine extends Line {
     constructor(point1, point2) {
         super(point1, point2);
-        this.color = {
-            r: 0,
-            g: 0,
-            b: 0
-        };
+        this.color = new Rgb();
         this.thickness = 1;
     }
     copy() {
         let c = super.copy();
-        c.color = {
-            r: this.color.r,
-            g: this.color.g,
-            b: this.color.b
-        };
+        c.color = this.color;
         c.thickness = this.thickness;
         return c;
     }

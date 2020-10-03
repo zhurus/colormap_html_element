@@ -1,6 +1,6 @@
 class TextOptions {
     constructor() {
-        this.size = 25;
+        this.size = 20;
         this.family = "Arial";
         this.color = "black";
         this.alignment = "center";

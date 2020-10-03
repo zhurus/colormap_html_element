@@ -2,8 +2,10 @@ class MouseInterpreter {
     constructor() {
         this.mouseClicked = false;
         this.mousein = false;
+        
         this.canvas = null;
         this.scene = null;
+        this.helper = null;
     }
     setCanvas(canvas) {
         let self = this;
@@ -34,6 +36,9 @@ class MouseInterpreter {
     setScene(scene) {
         this.scene = scene;
     }
+    attachHelper(helper) {
+        this.helper = helper;
+    }
     onMouseClicked(x, y) {}
     onMouseMoved(x, y, dx, dy) {}
     onMouseReleased(x, y) {}
@@ -47,26 +52,33 @@ class OpacityMouseInterpreter extends MouseInterpreter {
         this.coordinatesTransform = null;
     }
     onMouseClicked(x, y) {
-        let p = this.scene.findPoint(x, y);
+        if(this.selectedPoint)
+            this.selectedPoint.selected = false;
+        this.selectedPoint = null;
+        let p = this.scene.findByScreenCoordinates(x, y);
         if(!p) {
-            p = new PointWithLimits(x, y);
+            p = new PointWithLimits(
+                this.helper.coordinatesTransform.fromScreenX(x),
+                this.helper.coordinatesTransform.fromScreenY(y));
             p.setMinX(0);
             p.setMaxX(1);
             p.setMinY(0);
             p.setMaxY(1);
+            p.selected = true;
             this.scene.addPoint(p);
+        } else {
+            p.selected = true;
+            this.scene.repaint();
         }
-        this.selectedPoint = null;
         this.selectedPoint = p;
-        p.selected = true;
-        this.scene.repaint();
         this.draggedPoint = p;
-        // TODO
     }
     onMouseMoved(x, y, dx, dy) {
         if(!this.draggedPoint)
             return;
-        p.move(x, y);
+        this.draggedPoint.moveTo(
+            this.helper.fromScreenX(x), 
+            this.helper.fromScreenY(y));
         this.scene.repaint()
     }
     onMouseReleased(x, y) {

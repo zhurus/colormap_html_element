@@ -8,11 +8,7 @@ class Canvas {
         this.jquery[0].width = this.width;
         this.jquery[0].height = this.height;
 
-        this.helper = null;
-    }
-    drawPoint(point) {
-        debugger
-        this.drawRect(point.outlineRect());
+        this.helper = null; 
     }
     drawRect(rect) {
         if(rect instanceof FilledRect) {
