@@ -43,4 +43,31 @@ class Scene extends EventTarget {
             this.painter.drawPoint(p);
         });
     }
+    // private
+    _addPointNoRepaint(point) {
+        this.points.push(point);
+        this.dispatchEvent(new Event("change"));
+    }
+}
+
+class OpacityScene extends Scene {
+    constructor() {
+        super();
+        
+        this.fixedPnt1 = new PointWithLimits(0, 1);
+        this.fixedPnt1.setFixedX(0);
+        this.fixedPnt1.setMinY(0);
+        this.fixedPnt1.setMaxY(1);
+        this._addPointNoRepaint(this.fixedPnt1);
+
+        this.fixedPnt2 = new PointWithLimits(1, 1);
+        this.fixedPnt2.setFixedX(1);
+        this.fixedPnt2.setMinY(0);
+        this.fixedPnt2.setMaxY(1);
+        this._addPointNoRepaint(this.fixedPnt2);
+    }
+    removeSelected() {
+        if(this.selectedPoint != this.fixedPnt1 && this.selectedPoint != this.fixedPnt2)
+            super.removeSelected(this.selectedPoint);
+    }
 }

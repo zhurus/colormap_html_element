@@ -17,7 +17,8 @@ class OpacityInput extends EventTarget {
         this.scene.addEventListener("change", this._onChange.bind(this));
         this.scene.repaint();
 
-        $("#delete-selected-btn").click(this.removeSelected.bind(this));
+        let self = this;
+        $("#delete-selected-btn").click(e => self.scene.removeSelected());
     }
     getPoints() {
         return this.opacityPoints;
@@ -50,7 +51,7 @@ class OpacityInput extends EventTarget {
         return painter;
     }
     _makeScene(canvas, painter, helper) {
-        let scene = new Scene();
+        let scene = new OpacityScene();
         scene.canvas = canvas;
         scene.painter = painter;
         scene.helper = helper;
