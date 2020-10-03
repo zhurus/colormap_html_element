@@ -7,6 +7,11 @@ class Scene extends EventTarget {
         this.points = [];
         this.selectedPoint = null;
     }
+    setSelected(point) {
+        this.selectedPoint = point;
+        point.selected = true;
+        this.dispatchEvent(new Event("change"));
+    }
     addPoint(point) {
         this.points.push(point);
         this.repaint();
@@ -17,9 +22,11 @@ class Scene extends EventTarget {
             let idx = this.points.findIndex(p => p == this.selectedPoint, this);
             if(idx != -1) {
                 this.points.splice(idx, 1);
-                this.dispatchEvent(new Event("change"));
             }
         }
+        this.selectedPoint = null;
+        this.repaint();
+        this.dispatchEvent(new Event("change"));
     }
     findByScreenCoordinates(x, y) {
         return this.points.find(p => this.helper.isPointerOnPoint(x, y, p), this);

@@ -14,8 +14,10 @@ class OpacityInput extends EventTarget {
 
         this.opacityPoints = [];
 
-        this.scene.addEventListener("change", this._receivePoints.bind(this));
+        this.scene.addEventListener("change", this._onChange.bind(this));
         this.scene.repaint();
+
+        $("#delete-selected-btn").click(this.removeSelected.bind(this));
     }
     getPoints() {
         return this.opacityPoints;
@@ -26,9 +28,12 @@ class OpacityInput extends EventTarget {
             this.scene.addPoint(new PointWithLimits(p.x, p.y));
         });
     }
+    removeSelected() {
+        this.scene.removeSelected();
+    }
 
     //private
-    _receivePoints() {
+    _onChange() {
         this.opacityPoints = this.scene.points.map(p => new OpacityPoint(p.x, p.y));
         this.dispatchEvent(new Event("change"));
     }
