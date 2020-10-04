@@ -5,17 +5,15 @@ class OpacityInput extends CtfElementInput {
         let self = this;
         $("#delete-selected-btn").click(e => self.scene.removeSelected());
         $("#set-default-opacity-btn").click(e => self.scene.setDefault());
-        
-        // debug
-        let ctf = new Ctf()   
-        ctf.setDefault();
-        this.attachColormap(ctf.colormapPoints);
-        // debug
 
         this.scene.repaint();
     }
+    attachColormapPoints(colormapPoints) {
+        this.painter.attachColormapPoints(colormapPoints);
+        this.scene.repaint();
+    }
     getPoints() {
-        return this.opacityPoints;
+        return this.scene.points.map(sp => new OpacityPoint(sp.x, sp.y));
     }
     setPoints(points) {
         this.opacityPoints = points;
@@ -29,8 +27,9 @@ class OpacityInput extends CtfElementInput {
     setDefault() {
         this.scene.setDefault();
     }
-    attachColormap(colormapPoints) {
+    attachInterpolator(colormapPoints) {
         this.painter.attachColormapPoints(colormapPoints);
+        this.scene.repaint();
     }
 
     //private

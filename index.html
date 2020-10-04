@@ -15,8 +15,9 @@
                 </button>
             </div>
 
-            <div id="colormap-container">
+            <div id="colormap-container" class="row-oriented">
                 <canvas id="colormap-canvas"></canvas>
+                <input id="colormap-point-input" type="color">
             </div>
         </div>
 
@@ -35,11 +36,17 @@
 
         <script src="Canvas.js"></script>
         <script src="Painter.js"></script>
+        <script src="OpacityPainter.js"></script>
+        <script src="ColormapPainter.js"></script>
         <script src="CoordinatesTransform.js"></script>
 
         <script src="MouseInterpreter.js"></script>
+        <script src="OpacityMouseInterpreter.js"></script>
+        <script src="ColormapMouseInterpreter.js"></script>
+
         <script src="Scene.js"></script>
         <script src="OpacityScene.js"></script>
+        <script src="ColormapScene.js"></script>
 
         <script src="CtfElementInput.js"></script>
         <script src="OpacityInput.js"></script>

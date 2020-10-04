@@ -5,14 +5,15 @@ class CtfElementInput extends EventTarget {
 
         let coordinatesTransform = this._makeCoordinateTransform(this.canvas);
         let painterOptions = this._makePainterOptions();
-        let helper = this._makeHelper(coordinatesTransform, painterOptions);
+        this.helper = this._makeHelper(coordinatesTransform, painterOptions);
         this.painter = this._makePainter(this.canvas, coordinatesTransform, painterOptions);
-        this.scene = this._makeScene(this.canvas, this.painter, helper);
-        this.mouseInterpreter = this._makeMouseInterpreter(this.canvas, this.scene, helper);
+        this.scene = this._makeScene(this.canvas, this.painter, this.helper);
+        this.mouseInterpreter = this._makeMouseInterpreter(this.canvas, this.scene, this.helper);
 
         this.scene.addEventListener("change", this._onChange.bind(this));
     }
 
+    // private
     _onChange() {}
     _makePainterOptions() {
         return new PainterOptions();

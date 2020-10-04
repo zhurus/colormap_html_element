@@ -2,8 +2,11 @@ class Painter {
     constructor(canvas) {
         this.canvas = canvas;
         this.painterOptions = null;
-        
         this.coordinatesTransform = null;
+        this.interpolate = new CtfInterpolate();
+    }
+    attachColormapPoints(points) {
+        this.interpolate.attachColormapPoints(points)
     }
     drawPoint(point) {
         let width = this.painterOptions.pointOptions.outRectSize;
@@ -33,7 +36,7 @@ class Painter {
         this.canvas.drawText(
             text,
             this.coordinatesTransform.toScreenPoint(point),
-            this.painterOptions.textOptions
+            options
         );
     }
     clear() {

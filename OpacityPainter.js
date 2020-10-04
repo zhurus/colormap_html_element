@@ -1,11 +1,9 @@
 class OpacityPainter extends Painter {
     constructor(canvas) {
         super(canvas);
-
-        this.interpolator = new CtfInterpolate(); 
     }
     attachColormapPoints(colormapPoints) {
-        this.interpolator.attachColormapPoints(colormapPoints);
+        this.interpolate.attachColormapPoints(colormapPoints);
     }
     drawCoordinateSystem() {
         this._drawColormap();
@@ -94,18 +92,18 @@ class OpacityPainter extends Painter {
         }
     }
     _drawColormap() {
-        if(!this.interpolator.colormapPoints)
+        if(!this.interpolate.colormapPoints)
             return;
         let nRegions = this.painterOptions.nColormapRegions;
         let step = this.coordinatesTransform.width / nRegions;
         let x;
-        for(x = 0 + step / 2; x < this.coordinatesTransform.width; x += step) {
+        for(x = 0 + step / 2; x <= 1; x += step) {
             let l = new GraphicsLine(
                 new Point(x, 0),
                 new Point(x, 1)
             );
             l.thickness = this.coordinatesTransform.toScreenSizeX(step);
-            l.color = this.interpolator.interpolateColor(
+            l.color = this.interpolate.interpolateColor(
                 x / this.coordinatesTransform.width);
             this.drawLine(l);
         }

@@ -62,16 +62,17 @@ class PointWithLimits extends MovablePoint {
             this.y = maxY;
     }
     setFixedX(x) {
-        this.x = x;
-        this.minX = x;
-        this.maxX = x;
+        this.x = this.minX = this.maxX = x;
+    }
+    setFixedY(y) {
+        this.y = this.minY = this.maxY = y;
     }
     moveTo(x, y) {
         let fitVal = (val, range) => {
             if(range[0] != null && range[1] != null) {
                 if(val >= range[0] && val <= range[1])
                     return val;
-                else if(val < this.minX)
+                else if(val < range[0])
                     return range[0];
                 else if(val > range[1])
                     return range[1];

@@ -97,7 +97,7 @@ class CoordinatesTransform {
     setMarginLeft(leftMargin) {
         this.margin.left = leftMargin;
     }
-    setMarginTop(rightMargin) {
+    setMarginRight(rightMargin) {
         this.margin.right = rightMargin;
     }
 }

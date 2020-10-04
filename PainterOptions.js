@@ -3,7 +3,7 @@ class PainterOptions {
         this.pointOptions = {
             normalColor: new Rgb(0, 0, 0),
             selectedColor: new Rgb(100, 0, 0),
-            outRectSize: 10
+            outRectSize: 20
         };
         this.axles = {
             xAxleLength: 1.05,
