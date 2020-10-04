@@ -55,9 +55,7 @@ class Scene extends EventTarget {
     }
     removeSelected() {
         if(this.selectedPointIdx != -1) {
-            if(idx != -1) {
-                this.points.splice(idx, 1);
-            }
+            this.points.splice(this.selectedPointIdx, 1);
         }
         this.selectedPointIdx = -1;
         this._sort();

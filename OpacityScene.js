@@ -16,7 +16,7 @@ class OpacityScene extends Scene {
     }
     removeSelected() {
         if(this.selectedPoint != this.fixedPnt1 && this.selectedPoint != this.fixedPnt2)
-            super.removeSelected(this.selectedPoint);
+            super.removeSelected();
     }
     setDefault() {
         this._sort();

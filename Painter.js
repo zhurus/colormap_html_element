@@ -15,11 +15,19 @@ class Painter {
         let y = this.coordinatesTransform.toScreenY(point.y) - height / 2;
         let rect;
         if(!point.selected) {
-            rect = new StrokeRect(x, y, width, height);
+            let toFill = this.painterOptions.pointOptions.fillSelected;
+            if(toFill)
+                rect = new FilledRect(x, y, width, height);
+            else
+                rect = new StrokeRect(x, y, width, height);
             rect.color = this.painterOptions.pointOptions.normalColor;
         }
         else {
-            rect = new FilledRect(x, y, width, height);
+            let toFill = this.painterOptions.pointOptions.fillNormal;
+            if(toFill)
+                rect = new FilledRect(x, y, width, height);
+            else
+                rect = new StrokeRect(x, y, width, height);
             rect.color = this.painterOptions.pointOptions.selectedColor;
         }
         this.canvas.drawRect(rect);
