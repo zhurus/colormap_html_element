@@ -10,6 +10,7 @@ class PainterOptions {
             yAxleLength: 1.05,
             arrowEndSize: 10
         };
+        this.nColormapRegions = 100;
         this.textOptions = new TextOptions();
     }
 }
