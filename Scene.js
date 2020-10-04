@@ -33,20 +33,20 @@ class Scene extends EventTarget {
     }
     repaint() {
         this.painter.clear();
-        this.painter.drawCoordinateSystem();
-        this.points = this.points.sort((p1, p2) => p1.x - p2.x);
-        this.points.forEach((p, i, arr) => {
-            if(i != 0) {
-                let l = new GraphicsLine(arr[i-1], p);
-                this.painter.drawLine(l);
-            }
-            this.painter.drawPoint(p);
-        });
+        this.points.forEach(p => this.painter.drawPoint(p));
     }
+    setDefault() {
+        this.points = [];
+        this.repaint();
+    }
+
     // private
     _addPointNoRepaint(point) {
         this.points.push(point);
         this.dispatchEvent(new Event("change"));
+    }
+    _sort() {
+        this.points = this.points.sort((p1, p2) => p1.x - p2.x);
     }
 }
 
@@ -69,5 +69,39 @@ class OpacityScene extends Scene {
     removeSelected() {
         if(this.selectedPoint != this.fixedPnt1 && this.selectedPoint != this.fixedPnt2)
             super.removeSelected(this.selectedPoint);
+    }
+    setDefault() {
+        this._sort();
+        this.fixedPnt1.y = 1;
+        this.fixedPnt2.y = 1;
+        this.points.splice(1, this.points.length - 2);
+        this.repaint();
+    }
+    repaint() {
+        this.painter.clear();
+        this.painter.drawCoordinateSystem();
+        this._sort();
+        this.points.forEach((p, i, arr) => {
+            if(i != 0) {
+                let l = new GraphicsLine(arr[i-1], p);
+                this.painter.drawLine(l);
+            }
+            this.painter.drawPoint(p);
+        });
+    }
+
+    // private
+    _sort() {
+        this.points = this.points.sort((p1, p2) => {
+            if(p1 == this.fixedPnt1)
+                return -1;
+            if(p2 == this.fixedPnt1)
+                return 1;
+            if(p1 == this.fixedPnt2)
+                return 1;
+            if(p2 == this.fixedPnt2)
+                return -1;
+            return p1.x - p2.x;
+        });
     }
 }

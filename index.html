@@ -6,14 +6,17 @@
     <body>
         <div id="container">
             <div id="opacity-container" class="row-oriented">
-                <div class="column-oriented">
-                    <canvas id="opacity-canvas"></canvas>
-                </div>
-                <div>
-                    <button id="delete-selected-btn">
-                        Delete selected
-                    </button>
-                </div>
+                <canvas id="opacity-canvas"></canvas>
+                <button id="delete-selected-btn">
+                    Delete selected
+                </button>
+                <button id="set-default-opacity-btn">
+                    Set default
+                </button>
+            </div>
+
+            <div id="colormap-container">
+                <canvas id="colormap-canvas"></canvas>
             </div>
         </div>
 
@@ -33,7 +36,11 @@
 
         <script src="MouseInterpreter.js"></script>
         <script src="Scene.js"></script>
+
+        <script src="CtfElementInput.js"></script>
         <script src="OpacityInput.js"></script>
+        <script src="ColormapInput.js"></script>
+
         <script src="logic.js"></script>
     </body>
 </html>

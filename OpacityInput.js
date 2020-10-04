@@ -1,24 +1,13 @@
-class OpacityInput extends EventTarget {
+class OpacityInput extends CtfElementInput {
     constructor() {
-        super();
-        this.canvas = new Canvas($("#opacity-canvas"));
-
-        let coordinatesTransform = new CoordinatesTransform();
-        coordinatesTransform.adaptToCanvas(this.canvas);
-        let painterOptions = new PainterOptions();
-
-        let helper = this._makeHelper(coordinatesTransform, painterOptions);
-        let painter = this._makePainter(this.canvas, coordinatesTransform, painterOptions);
-        this.scene = this._makeScene(this.canvas, painter, helper);
-        this.mouseInterpreter = this._makeMouseInterpreter(this.canvas, this.scene, helper);
-
-        this.opacityPoints = [];
-
-        this.scene.addEventListener("change", this._onChange.bind(this));
+        super($("#opacity-canvas"));
         this.scene.repaint();
 
         let self = this;
         $("#delete-selected-btn").click(e => self.scene.removeSelected());
+        $("#set-default-opacity-btn").click(e => self.scene.setDefault());
+        this.scene.repaint();
+
     }
     getPoints() {
         return this.opacityPoints;
@@ -32,17 +21,25 @@ class OpacityInput extends EventTarget {
     removeSelected() {
         this.scene.removeSelected();
     }
+    setDefault() {
+        this.scene.setDefault();
+    }
 
     //private
     _onChange() {
         this.opacityPoints = this.scene.points.map(p => new OpacityPoint(p.x, p.y));
         this.dispatchEvent(new Event("change"));
     }
+    _makeCoordinateTransform(canvas) {
+        return super._makeCoordinateTransform(canvas);
+    }
     _makeHelper(coordinatesTransform, painterOptions) {
-        let helper = new CanvasHelper();
-        helper.coordinatesTransform = coordinatesTransform;
-        helper.painterOptions = painterOptions;
-        return helper;
+        return super._makeHelper(coordinatesTransform, painterOptions);
+    }
+    _makePainterOptions() {
+        let po = new PainterOptions();
+        po.axles.yAxleLength = 1.2;
+        return po;
     }
     _makePainter(canvas, coordinatesTransform, painterOptions) {
         let painter = new OpacityPainter(canvas);
