@@ -16,8 +16,8 @@ class ColormapMouseInterpreter extends MouseInterpreter {
             p.setMinX(0);
             p.setMaxX(1);
             p.setFixedY(0.5);
-            this.scene.setSelected(p);
             this.scene.addPoint(p);
+            this.scene.setSelected(p);
         } else {
             this.scene.setSelected(p);
             this.scene.repaint();
@@ -30,7 +30,7 @@ class ColormapMouseInterpreter extends MouseInterpreter {
             return;
         let x_ = this.helper.fromScreenX(x);
         let y_ = this.helper.fromScreenY(y);
-        this.draggedPoint.moveTo(x_, y_);
+        this.scene.moveSelected(x_, y_);
         this.scene.repaint();
     }
     onMouseReleased(x, y) {

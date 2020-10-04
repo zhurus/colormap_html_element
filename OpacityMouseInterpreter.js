@@ -17,8 +17,8 @@ class OpacityMouseInterpreter extends MouseInterpreter {
             p.setMaxX(1);
             p.setMinY(0);
             p.setMaxY(1);
-            this.scene.setSelected(p);
             this.scene.addPoint(p);
+            this.scene.setSelected(p);
         } else {
             this.scene.setSelected(p);
             this.scene.repaint();
@@ -29,7 +29,7 @@ class OpacityMouseInterpreter extends MouseInterpreter {
     onMouseMoved(x, y, dx, dy) {
         if(!this.draggedPoint)
             return;
-        this.draggedPoint.moveTo(
+        this.scene.moveSelected(
             this.helper.fromScreenX(x), 
             this.helper.fromScreenY(y));
         this.scene.repaint();

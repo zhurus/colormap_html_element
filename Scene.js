@@ -5,26 +5,62 @@ class Scene extends EventTarget {
         this.canvas = null;
         this.helper = null
         this.points = [];
-        this.selectedPoint = null;
+        this.selectedPointIdx = -1;
     }
     setSelected(point) {
-        this.selectedPoint = point;
+        this.selectedPointIdx = this.points.findIndex(p => point == p);
         point.selected = true;
         this.dispatchEvent(new Event("change"));
+    }
+    moveSelected(x, y) {
+        if(this.selectedPointIdx == -1)
+            return;
+        let p = this.points[this.selectedPointIdx];
+        let idx = this.selectedPointIdx;
+        let idx1 = this.selectedPointIdx - 1;
+        let idx2 = this.selectedPointIdx + 1;
+
+        let oldX = p.x;
+        let oldY = p.y;
+        if(idx != 0 && idx != this.points.length - 1)
+        {
+            if(x > this.points[idx1].x && x < this.points[idx2].x)
+                p.moveTo(x, y);
+            else if(x < this.points[idx1].x)
+                p.moveTo(this.points[idx1].x, y);
+            else
+                p.moveTo(this.points[idx2].x, y);
+        } 
+        else if(idx == 0)
+        {
+            if(x < this.points[1].x)
+                p.moveTo(x, y);
+            else
+                p.moveTo(this.points[1].x, y);
+        } else {
+            if(x > this.points[idx1].x)
+                p.moveTo(x, y);
+            else
+                p.moveTo(this.points[idx1].x, y);
+        }
+
+        if(p.x != oldX || p.y != oldY)
+            this.dispatchEvent(new Event("input"));
     }
     addPoint(point) {
         this.points.push(point);
         this.repaint();
+        this._sort();
         this.dispatchEvent(new Event("change"));
     }
     removeSelected() {
-        if(this.selectedPoint) {
-            let idx = this.points.findIndex(p => p == this.selectedPoint, this);
+        if(this.selectedPointIdx != -1) {
             if(idx != -1) {
                 this.points.splice(idx, 1);
             }
         }
-        this.selectedPoint = null;
+        this.selectedPointIdx = -1;
+        this._sort();
         this.repaint();
         this.dispatchEvent(new Event("change"));
     }
@@ -43,6 +79,7 @@ class Scene extends EventTarget {
     // private
     _addPointNoRepaint(point) {
         this.points.push(point);
+        this._sort();
         this.dispatchEvent(new Event("change"));
     }
     _sort() {
