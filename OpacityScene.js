@@ -6,16 +6,16 @@ class OpacityScene extends Scene {
         this.fixedPnt1.setFixedX(0);
         this.fixedPnt1.setMinY(0);
         this.fixedPnt1.setMaxY(1);
-        this._addPointNoRepaint(this.fixedPnt1);
+        this.addPoint(this.fixedPnt1);
 
         this.fixedPnt2 = new PointWithLimits(1, 1);
         this.fixedPnt2.setFixedX(1);
         this.fixedPnt2.setMinY(0);
         this.fixedPnt2.setMaxY(1);
-        this._addPointNoRepaint(this.fixedPnt2);
+        this.addPoint(this.fixedPnt2);
     }
     removeSelected() {
-        if(this.selectedPoint != this.fixedPnt1 && this.selectedPoint != this.fixedPnt2)
+        if(this.selectedPointIdx != 0 && this.selectedPointIdx != this.points.length - 1)
             super.removeSelected();
     }
     setDefault() {
@@ -23,7 +23,8 @@ class OpacityScene extends Scene {
         this.fixedPnt1.y = 1;
         this.fixedPnt2.y = 1;
         this.points.splice(1, this.points.length - 2);
-        this.repaint();
+        this.dispatchEvent(new Event("change"));
+        this.dispatchEvent(new Event("input"));
     }
     repaint() {
         this.painter.clear();

@@ -35,6 +35,9 @@ class OpacityMouseInterpreter extends MouseInterpreter {
         this.scene.repaint();
     }
     onMouseReleased(x, y) {
-        this.draggedPoint = null;
+        if(this.draggedPoint) {
+            this.draggedPoint = null;
+            this.scene.dispatchEvent(new Event("change"));
+        }
     }
 }

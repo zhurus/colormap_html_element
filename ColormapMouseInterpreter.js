@@ -33,7 +33,10 @@ class ColormapMouseInterpreter extends MouseInterpreter {
         this.scene.moveSelected(x_, y_);
         this.scene.repaint();
     }
-    onMouseReleased(x, y) {
-        this.draggedPoint = null;
+    onMouseReleased(x, y) { 
+        if(this.draggedPoint) {
+            this.draggedPoint = null;
+            this.scene.dispatchEvent(new Event("change"));
+        }
     }
 }

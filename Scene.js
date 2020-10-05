@@ -11,6 +11,7 @@ class Scene extends EventTarget {
         this.selectedPointIdx = this.points.findIndex(p => point == p);
         point.selected = true;
         this.dispatchEvent(new Event("change"));
+        this.dispatchEvent(new Event("input"));
     }
     moveSelected(x, y) {
         if(this.selectedPointIdx == -1)
@@ -49,18 +50,18 @@ class Scene extends EventTarget {
     }
     addPoint(point) {
         this.points.push(point);
-        this.repaint();
         this._sort();
         this.dispatchEvent(new Event("change"));
+        this.dispatchEvent(new Event("input"));
     }
     removeSelected() {
         if(this.selectedPointIdx != -1) {
             this.points.splice(this.selectedPointIdx, 1);
+            this.selectedPointIdx = -1;
+            this._sort();
+            this.dispatchEvent(new Event("change"));
+            this.dispatchEvent(new Event("input"));
         }
-        this.selectedPointIdx = -1;
-        this._sort();
-        this.repaint();
-        this.dispatchEvent(new Event("change"));
     }
     findByScreenCoordinates(x, y) {
         return this.points.find(p => this.helper.isPointerOnPoint(x, y, p), this);
@@ -69,17 +70,8 @@ class Scene extends EventTarget {
         this.painter.clear();
         this.points.forEach(p => this.painter.drawPoint(p));
     }
-    setDefault() {
-        this.points = [];
-        this.repaint();
-    }
 
     // private
-    _addPointNoRepaint(point) {
-        this.points.push(point);
-        this._sort();
-        this.dispatchEvent(new Event("change"));
-    }
     _sort() {
         this.points = this.points.sort((p1, p2) => p1.x - p2.x);
     }

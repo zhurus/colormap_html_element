@@ -3,10 +3,20 @@ class OpacityInput extends CtfElementInput {
         super($("#ctf-opacity-canvas"));
 
         let self = this;
-        $("#delete-selected-btn").click(e => self.scene.removeSelected());
-        $("#set-default-opacity-btn").click(e => self.scene.setDefault());
+        $("#ctf-opacity-remove-btn").click(e => self.scene.removeSelected());
+        $("#ctf-opacity-setDefault-btn").click(e => self.setDefault());
 
         this.scene.repaint();
+
+        this.scene.addEventListener("change", () => {
+            console.log("opacity change");      // debug
+            this.dispatchEvent(new Event("change"));
+        });
+        this.scene.addEventListener("input", () => {
+            console.log("opacity input");       // debug
+            this.dispatchEvent(new Event("input"));
+            this.scene.repaint();
+        });
     }
     attachColormapPoints(colormapPoints) {
         this.painter.attachColormapPoints(colormapPoints);
@@ -21,9 +31,6 @@ class OpacityInput extends CtfElementInput {
             this.scene.addPoint(new PointWithLimits(p.x, p.y));
         });
     }
-    removeSelected() {
-        this.scene.removeSelected();
-    }
     setDefault() {
         this.scene.setDefault();
     }
@@ -34,7 +41,7 @@ class OpacityInput extends CtfElementInput {
 
     //private
     _onChange() {
-        this.opacityPoints = this.scene.points.map(p => new OpacityPoint(p.x, p.y));
+        // this.opacityPoints = this.scene.points.map(p => new OpacityPoint(p.x, p.y));
         this.dispatchEvent(new Event("change"));
     }
     _makeCoordinateTransform(canvas) {
