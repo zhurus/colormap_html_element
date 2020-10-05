@@ -10,7 +10,9 @@ class PainterOptions {
         this.axles = {
             xAxleLength: 1.05,
             yAxleLength: 1.05,
-            arrowEndSize: 10
+            arrowEndSize: 10,
+            labelsStepX: 0.2,
+            labelsStepY: 0.25
         };
         this.nColormapRegions = 900;
         this.textOptions = new TextOptions();

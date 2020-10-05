@@ -1,6 +1,6 @@
 class OpacityInput extends CtfElementInput {
     constructor() {
-        super($("#opacity-canvas"));
+        super($("#ctf-opacity-canvas"));
 
         let self = this;
         $("#delete-selected-btn").click(e => self.scene.removeSelected());
@@ -38,7 +38,9 @@ class OpacityInput extends CtfElementInput {
         this.dispatchEvent(new Event("change"));
     }
     _makeCoordinateTransform(canvas) {
-        return super._makeCoordinateTransform(canvas);
+        let coodrdsTransform = super._makeCoordinateTransform(canvas);
+        // coodrdsTransform.margin.right = 20;
+        return coodrdsTransform;
     }
     _makeHelper(coordinatesTransform, painterOptions) {
         return super._makeHelper(coordinatesTransform, painterOptions);

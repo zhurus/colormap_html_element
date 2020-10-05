@@ -46,11 +46,11 @@ class OpacityPainter extends Painter {
         yAxleLabelsOptions.setBaseline("middle");
         yAxleLabelsOptions.setAlignment("right");
         
-        let step = 0.2;
+        let stepY = this.painterOptions.axles.labelsStepY;
         let x1 = this.coordinatesTransform.toScreenX(0) - 5;
         let x2 = this.coordinatesTransform.toScreenX(0) + 5;
         let x1_ = this.coordinatesTransform.fromScreenX(x1 - 5);
-        for(let i = 0.2; i < this.painterOptions.axles.yAxleLength; i += step) 
+        for(let i = stepY; i < this.painterOptions.axles.yAxleLength; i += stepY) 
         {
             let y = this.coordinatesTransform.toScreenY(i);
             let p1 = new Point(x1, y);
@@ -59,7 +59,7 @@ class OpacityPainter extends Painter {
             this.canvas.drawLine(l);
 
             this.drawText(
-                Number(i).toPrecision(1),
+                Number(i).toPrecision(2),
                 new Point(x1_, i),
                 this.painterOptions.textOptions);
         }
@@ -69,7 +69,7 @@ class OpacityPainter extends Painter {
         xAxleLabelsOptions.setBaseline("top");
         xAxleLabelsOptions.setAlignment("center");
         
-        step = 0.2;
+        let stepX = this.painterOptions.axles.labelsStepX;
         let y1 = this.coordinatesTransform.toScreenY(0) - 5;
         let y2 = this.coordinatesTransform.toScreenY(0) + 5;
         let y1_;
@@ -77,7 +77,7 @@ class OpacityPainter extends Painter {
             y1_ = this.coordinatesTransform.fromScreenY(y2 + 5);
         else
             y1_ = this.coordinatesTransform.fromScreenY(y2 - 5);
-        for(let i = 0.2; i < this.painterOptions.axles.xAxleLength; i += step) 
+        for(let i = stepX; i < this.painterOptions.axles.xAxleLength; i += stepX) 
         {
             let x = this.coordinatesTransform.toScreenX(i);
             let p1 = new Point(x, y1);

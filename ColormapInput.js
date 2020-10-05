@@ -21,7 +21,7 @@ class ColormapInput extends CtfElementInput {
         this.scene.repaint();
     }
     getPoints() {
-        
+        // TODO
     }
     
     // private
@@ -35,8 +35,8 @@ class ColormapInput extends CtfElementInput {
     _makeCoordinateTransform(canvas) {
         let coordinatesTransform = new CoordinatesTransform();
         coordinatesTransform.adaptToCanvas(canvas);
-        coordinatesTransform.setMarginBottom(30);
-        coordinatesTransform.setMarginTop(30);
+        coordinatesTransform.setMarginBottom(25);
+        coordinatesTransform.setMarginTop(10);
         return coordinatesTransform;
     }
     _makePainter(canvas, coordinatesTransform, painterOptions) {

@@ -1,32 +1,79 @@
+* {
+    font-size: small;
+}
+
 #container {
     display: flex;
     flex-direction: column;
 }
 
 canvas {
-    background-color: gray;
+    background-color: rgb(199, 199, 199);
 }
 
-#opacity-canvas {
-    width: 500px;
-    height: 300px;
-}
+#ctf-opacity {
+    display: flex;
+    align-items: stretch;
 
-#opacity-container {
     padding: 5px;
 }
 
-#colormap-canvas {
-    width: 500px;
+#ctf-colormap {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    padding: 5px;
+}
+
+#colormap-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+}
+#ctf-opacity-buttons {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+}
+button {
+    margin: 2px;
+}
+
+
+#opacity-canvas {
+    width: 300px;
     height: 200px;
+}
+
+
+#colormap-canvas {
+    width: 300px;
+    height: 80px;
+}
+
+#ctf-opacity-options {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-self: center;
+
+    padding: 5px;
+}
+
+#ctf-opacity-options > button {
+    margin: 2px;
 }
 
 .row-oriented {
     display: flex;
     flex-direction: row;
+    align-items: center;
 }
 
 .column-oriented {
     display: flex;
     flex-direction: column;
+    align-items: center;
 }

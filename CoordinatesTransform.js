@@ -3,10 +3,10 @@ class CoordinatesTransform {
         this.screenWidth = null;
         this.screenHeight = null;
         this.margin = {
-            top: 50,
-            bottom: 50,
-            left: 50,
-            right: 50
+            top: 30,
+            bottom: 25,
+            left: 40,
+            right: 20
         };
 
         this.width = 1;

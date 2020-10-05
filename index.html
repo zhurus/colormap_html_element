@@ -5,19 +5,42 @@
     </head>
     <body>
         <div id="container">
-            <div id="opacity-container" class="row-oriented">
-                <canvas id="opacity-canvas"></canvas>
-                <button id="delete-selected-btn">
-                    Delete selected
-                </button>
-                <button id="set-default-opacity-btn">
-                    Set default
-                </button>
+            <div id="ctf-opacity" class="row-oriented">
+                <canvas id="ctf-opacity-canvas"></canvas>
+                <div id="ctf-opacity-options">
+                    <div id="ctf-opacity-buttons">
+                        <button id="delete-selected-btn"> Delete selected </button>
+                        <button id="set-default-opacity-btn"> Set default </button>
+                    </div>
+                    <div class="column-oriented">
+                        <div class="column-oriented">
+                            <label>Relative value:</label>
+                            <input id="opacity-selected-relval" type="text" size="10" disabled>
+                        </div>
+                        <div class="column-oriented">
+                            <label>Opacity:</label>
+                            <input id="opacity-selected-relval" type="text" size="10" disabled>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div id="colormap-container" class="row-oriented">
+            <div id="ctf-colormap">
                 <canvas id="colormap-canvas"></canvas>
-                <input id="colormap-point-input" type="color">
+                <div id="colormap-options">
+                    <div class="column-oriented">
+                        <label>Relative value:</label>
+                        <input type="text" size="4" disabled>
+                    </div>
+                    <div class="column-oriented">
+                        <label>Color</label>
+                        <input id="colormap-point-input" type="color" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="row-oriented">
+                <button>Ok</button>
+                <button>Cancel</button>
             </div>
         </div>
 

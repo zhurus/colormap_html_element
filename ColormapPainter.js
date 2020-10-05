@@ -39,7 +39,7 @@ class ColormapPainter extends Painter {
         this.drawLine(l);
     }
     _drawLabels() {
-        let step = 0.2;
+        let stepX = this.painterOptions.axles.labelsStepX;
         let x = 0;
         let labelTextOpts = new TextOptions();
         labelTextOpts.alignment = "center";
@@ -48,7 +48,7 @@ class ColormapPainter extends Painter {
         let y1 = this.coordinatesTransform.toScreenY(0) + arrowSize / 2;
         let y2 = this.coordinatesTransform.toScreenY(0) - arrowSize / 2;
         let y_ = y1 + arrowSize / 2;
-        for(; x < this.painterOptions.axles.xAxleLength; x += step) {
+        for(; x < this.painterOptions.axles.xAxleLength; x += stepX) {
             let x_ = this.coordinatesTransform.toScreenX(x);
             let p = new Point(x_, y_);
             this.canvas.drawText(
