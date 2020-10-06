@@ -14,11 +14,15 @@ class CtfInterpolate {
             this.colormapPoints = colormapPoints.sort((cp1, cp2) => cp1.relativeVal - cp2.relativeVal);
     }
     interpolateOpacity(relVal) {
-        if(relVal <= 0)
+        if(this.opacityPoints.length == 1)
             return this.opacityPoints[0].opacity;
-        else if(relVal >= 1)
-            return this.opacityPoints[this.opacityPoints.length - 1].opacity;
-        let idx = 0;
+        
+        if(relVal <= this.opacityPoints[0].relativeVal)
+            return this.opacityPoints[0].opacity;
+        else if(relVal >= this.opacityPoints[this.opacityPoints.length - 1].relativeVal)
+            return this.opacityPoints[1].opacity;
+        
+        let idx = 0;    
         for(; this.opacityPoints[idx + 1].relativeVal < relVal; ++idx) {}
         let op1 = this.opacityPoints[idx].opacity;
         let op2 = this.opacityPoints[idx + 1].opacity;
@@ -27,9 +31,12 @@ class CtfInterpolate {
         return op1 + (op2 - op1) / (relVal2 - relVal1) * (relVal - relVal1);
     }
     interpolateColor(relVal) {
-        if(relVal <= 0)
+        if(this.colormapPoints.length == 1)
             return this.colormapPoints[0].rgb;
-        else if(relVal >= 1)
+
+        if(relVal <= this.colormapPoints[0].relativeVal)
+            return this.colormapPoints[0].rgb;
+        else if(relVal >= this.colormapPoints[this.colormapPoints.length - 1].relativeVal)
             return this.colormapPoints[this.colormapPoints.length - 1].rgb;
         let idx = 0;
         for(; this.colormapPoints[idx + 1].relativeVal < relVal; ++idx) {}

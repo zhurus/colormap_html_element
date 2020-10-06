@@ -27,7 +27,7 @@ class Scene extends EventTarget {
         {
             if(x > this.points[idx1].x && x < this.points[idx2].x)
                 p.moveTo(x, y);
-            else if(x < this.points[idx1].x)
+            else if(x <= this.points[idx1].x)
                 p.moveTo(this.points[idx1].x, y);
             else
                 p.moveTo(this.points[idx2].x, y);
@@ -66,6 +66,13 @@ class Scene extends EventTarget {
     findByScreenCoordinates(x, y) {
         return this.points.find(p => this.helper.isPointerOnPoint(x, y, p), this);
     }
+    getSelectedPoint() {
+        if(this.selectedPointIdx != -1)
+            return this.points[this.selectedPointIdx];
+    }
+    contains(point) {
+        return this.points.includes(point);
+    } 
     repaint() {
         this.painter.clear();
         this.points.forEach(p => this.painter.drawPoint(p));

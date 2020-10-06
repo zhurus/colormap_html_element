@@ -40,10 +40,6 @@ class OpacityInput extends CtfElementInput {
     }
 
     //private
-    _onChange() {
-        // this.opacityPoints = this.scene.points.map(p => new OpacityPoint(p.x, p.y));
-        this.dispatchEvent(new Event("change"));
-    }
     _makeCoordinateTransform(canvas) {
         let coodrdsTransform = super._makeCoordinateTransform(canvas);
         // coodrdsTransform.margin.right = 20;
