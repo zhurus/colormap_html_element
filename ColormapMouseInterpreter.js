@@ -10,14 +10,10 @@ class ColormapMouseInterpreter extends MouseInterpreter {
         this.selectedPoint = null;
         let p = this.scene.findByScreenCoordinates(x, y);
         if(!p) {
-            p = new PointWithLimits(
-                this.helper.coordinatesTransform.fromScreenX(x),
-                this.helper.coordinatesTransform.fromScreenY(y));
-            p.setMinX(0);
-            p.setMaxX(1);
-            p.setFixedY(0.5);
-            this.scene.addPoint(p);
-            this.scene.setSelected(p);
+            let sceneX = this.helper.coordinatesTransform.fromScreenX(x);
+            let sceneY = this.helper.coordinatesTransform.fromScreenY(y);
+
+            p = this.scene.createPoint(sceneX, sceneY);
         } else {
             this.scene.setSelected(p);
             this.scene.repaint();

@@ -2,53 +2,43 @@ class ColormapInput extends CtfElementInput {
     constructor() {
         super($("#ctf-colormap-canvas"));
 
-        this.colormapPointsInfo = [];
+        this.colormapPoints = [];
 
         this.colorInput = $("#colormap-point-input");
 
         // this.colorPickerJQ = new NumberInput()
         this.colorPickerJQ = $("#ctf-colormap-color-input");
 
+        this.scene.repaint();
+
         $("#ctf-colormap-setDefault-btn").click(e => this.setDefault());
         $("#ctf-colormap-remove-btn").click(e => this.scene.removeSelected());
 
-        this.scene.addEventListener("change", ()=>{
-            this.dispatchEvent(new Event("change"))
-        });
-        this.scene.addEventListener("input", ()=>{
-            let cmPts = [];
-            this.scene.points.forEach(p => {
-                
-            });
-            // TODO
-            this.painter.attachColormapPoints(cmPts);
-            this.scene.repaint();
-            this.dispatchEvent(new Event("input"));
-        });
+        this.scene.addEventListener("select_point", this._onSelectPoint.bind(this));
+        this.scene.addEventListener("add_point", this._onAddPoint.bind(this));
+        this.scene.addEventListener("move_point", this._onMovePoint.bind(this));
+        this.scene.addEventListener("remove_point", this._onRemovePoint.bind(this));
+        this.scene.addEventListener("create_point", this._onCreatePoint.bind(this));
     }
     setPoints(colormapPoints) {
-        this.colormapPointsInfo = [];
+        this.colormapPoints = colormapPoints;
+        this.painter.attachColormapPoints(colormapPoints);
         colormapPoints.forEach(p => {
             let sp = new PointWithLimits(
                 p.relativeVal,
                 0.5
             );
-            this.colormapPointsInfo.push({
-                scenePoint: sp,
-                colormapPoint: p
-            });
-            sp.setFixedY(0.5);
-            sp.setMinX(0);
-            sp.setMaxX(1);
             this.scene.addPoint(sp);
         }, this);
         this.painter.attachColormapPoints(colormapPoints);
+        this.scene.repaint();
     }
     getPoints() {
         // TODO
     }
     setDefault() {
         this.scene.setDefault();
+        // TODO
     }
     
     // private
@@ -81,5 +71,49 @@ class ColormapInput extends CtfElementInput {
         scene.painter = painter;
         scene.helper = helper;
         return scene;
+    }
+
+    // slots
+    _onSelectPoint() {
+        // TODO
+        debugger
+        this.scene.repaint();
+    }
+    _onRemovePoint() {
+        // TODO
+        debugger
+        this.scene.repaint();
+    }
+    _onAddPoint() {
+        // TODO
+        // debugger
+        this.scene.repaint();
+    }
+    _onMovePoint() {
+        // TODO
+        debugger
+        this.scene.repaint();
+    }
+    _onCreatePoint() {
+        let interpolate = new CtfInterpolate(null, this.colormapPoints);
+        let sorted = this.colormapPoints.sort((cmPt1, cmPt2) => {
+            return cmPt1.relativeVal - cmPt2.relativeVal; 
+        });
+        
+        let scPoint = this.scene.points.find((sp, idx) => {
+            return sp.x != sorted[idx].relativeVal;
+        });
+        let rgb = interpolate.interpolateColor(scPoint.x);
+        // TODO attach relative val to relative value input
+        // TODO attach color to color picker
+        let cmPoint = new ColormapPoint(scPoint.x, rgb);
+        sorted.push(cmPoint);
+        sorted = sorted.sort((cmPt1, cmPt2) => {
+            return cmPt1.relativeVal - cmPt2.relativeVal; 
+        });
+        for(let i = 0; i < this.colormapPoints.length; ++i)
+            this.colormapPoints[i] = sorted[i];
+
+        this.scene.repaint();
     }
 }

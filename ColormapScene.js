@@ -3,11 +3,24 @@ class ColormapScene extends Scene {
         super();
     }
     addPoint(point) {
+        this._sort();
         point.setFixedY(0.5);
-        if(point.x == 0)
-            point.setFixedX(0);
-        else if(point.x == 1)
-            point.setFixedX(1);
+        if(point.x == 0) {
+            if(this.points.length != 0 && this.points[0].x == 0)
+                return;
+            else
+                point.setFixedX(0);
+        }
+        else if(point.x == 1) {
+            if(this.points.length != 0 && this.points[this.points.length-1].x == 1)
+                return;
+            else
+                point.setFixedX(1);
+        }
+        else {
+            point.setMinX(0);
+            point.setMaxX(1);
+        }
         super.addPoint(point);
     }
     removeSelected() {
@@ -16,6 +29,23 @@ class ColormapScene extends Scene {
         if(this.points[this.selectedPointIdx].x == 0 || this.points[this.selectedPointIdx].x == 1)
             return;
         super.removeSelected();
+    }
+    createPoint(x, y) {
+        if(x <= 0 || x >= 1)
+            return;
+        if(y < 0 || y > 1)
+            return;
+        let p = new PointWithLimits(x, y);
+        this.points.push(p);
+        this._sort();
+        p.setMinX(0);
+        p.setMaxX(1);
+        p.setFixedY(0.5);
+
+        this.selectedPointIdx = this.points.findIndex(point => point == p);
+        p.selected = true;
+        this.dispatchEvent(new Event("create_point"));
+        return p;
     }
     repaint() {
         this.painter.clear();

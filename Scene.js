@@ -10,8 +10,7 @@ class Scene extends EventTarget {
     setSelected(point) {
         this.selectedPointIdx = this.points.findIndex(p => point == p);
         point.selected = true;
-        this.dispatchEvent(new Event("change"));
-        this.dispatchEvent(new Event("input"));
+        this.dispatchEvent(new Event("select_point"));
     }
     moveSelected(x, y) {
         if(this.selectedPointIdx == -1)
@@ -46,25 +45,33 @@ class Scene extends EventTarget {
         }
 
         if(p.x != oldX || p.y != oldY)
-            this.dispatchEvent(new Event("input"));
+            this.dispatchEvent(new Event("move_selected"));
     }
     addPoint(point) {
         this.points.push(point);
         this._sort();
-        this.dispatchEvent(new Event("change"));
-        this.dispatchEvent(new Event("input"));
+        this.dispatchEvent(new Event("add_point"));
+    }
+    createPoint(x, y) {
+        let point = new PointWithLimits(x, y);
+        this.points.push(point);
+        this._sort();
+        this.dispatchEvent(new Event("create_point"));
+        return point;
     }
     removeSelected() {
         if(this.selectedPointIdx != -1) {
             this.points.splice(this.selectedPointIdx, 1);
             this.selectedPointIdx = -1;
             this._sort();
-            this.dispatchEvent(new Event("change"));
-            this.dispatchEvent(new Event("input"));
+            this.dispatchEvent(new Event("remove_point"));
         }
     }
     findByScreenCoordinates(x, y) {
         return this.points.find(p => this.helper.isPointerOnPoint(x, y, p), this);
+    }
+    find(predicate, thisArg) {
+        return this.points.find(predicate, thisArg);
     }
     getSelectedPoint() {
         if(this.selectedPointIdx != -1)
@@ -76,6 +83,10 @@ class Scene extends EventTarget {
     repaint() {
         this.painter.clear();
         this.points.forEach(p => this.painter.drawPoint(p));
+    }
+    clear() {
+        this.points = [];
+        this.selectedPointIdx = -1;
     }
 
     // private
