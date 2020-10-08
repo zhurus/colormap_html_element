@@ -5,7 +5,7 @@ class Rgb {
         this.b = b? b : 0;
     }
     toString() {
-        if(this.r && this.g && this.b)
+        if(!isNaN(this.r) && !isNaN(this.g) && !isNaN(this.b))
             return `rgb(${this.r},${this.g},${this.b})`;
     }
 }

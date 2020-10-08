@@ -12,16 +12,16 @@ class Canvas {
     }
     drawRect(rect) {
         if(rect instanceof FilledRect) {
-            this.context.fillStyle = `rgb(${rect.color.r},${rect.color.g},${rect.color.b})`;
+            this.context.fillStyle = rect.color.toString();
             this.context.fillRect(rect.x, rect.y, rect.width, rect.height);
         } else if(rect instanceof StrokeRect) {
-            this.context.strokeStyle = `rgb(${rect.color.r},${rect.color.g},${rect.color.b})`;
+            this.context.strokeStyle = rect.color.toString();
             this.context.strokeRect(rect.x, rect.y, rect.width, rect.height);
         }
     }
     drawLine(line) {
         if(line instanceof GraphicsLine) {
-            this.context.strokeStyle = `rgb(${line.color.r},${line.color.g},${line.color.b})`;
+            this.context.strokeStyle = line.color.toString();
             this.context.beginPath();
             this.context.moveTo(line.point1.x, line.point1.y);
             this.context.lineTo(line.point2.x, line.point2.y);
