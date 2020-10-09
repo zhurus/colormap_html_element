@@ -4,21 +4,9 @@ class ColormapInput extends CtfElementInput {
 
         this.colormapPoints = [];
 
-        this.colorInput = $("#colormap-point-input");
-
-        // this.colorPickerJQ = new NumberInput()
+        this.relValNumbInpJQ = new objects.NumberInput("#ctf-colormap-relval-input");
         this.colorPickerJQ = $("#ctf-colormap-color-input");
-
-        this.scene.repaint();
-
-        $("#ctf-colormap-setDefault-btn").click(e => this.setDefault());
-        $("#ctf-colormap-remove-btn").click(e => this.scene.removeSelected());
-
-        this.scene.addEventListener("select_point", this._onSelectPoint.bind(this));
-        this.scene.addEventListener("add_point", this._onAddPoint.bind(this));
-        this.scene.addEventListener("move_point", this._onMovePoint.bind(this));
-        this.scene.addEventListener("remove_point", this._onRemovePoint.bind(this));
-        this.scene.addEventListener("create_point", this._onCreatePoint.bind(this));
+        this._init();
     }
     setPoints(colormapPoints) {
         this.colormapPoints = colormapPoints;
@@ -38,10 +26,29 @@ class ColormapInput extends CtfElementInput {
     }
     setDefault() {
         this.scene.setDefault();
-        // TODO
+        this.colorPickerJQ.attr("disabled", true);
+        this.relValNumbInpJQ.disable();
+        this.colormapPoints = this.getPoints();
     }
     
     // private
+    _init() {
+        this.scene.repaint();
+        this.relValNumbInpJQ.disable();
+
+        $("#ctf-colormap-setDefault-btn").click(e => this.setDefault());
+        $("#ctf-colormap-remove-btn").click(e => this.scene.removeSelected());
+
+        this.scene.addEventListener("select_point", this._onSelectPoint.bind(this));
+        this.scene.addEventListener("add_point", this._onAddPoint.bind(this));
+        this.scene.addEventListener("move_point", this._onMovePoint.bind(this));
+        this.scene.addEventListener("remove_point", this._onRemovePoint.bind(this));
+        this.scene.addEventListener("create_point", this._onCreatePoint.bind(this));
+        this.scene.addEventListener("select_point", this._onSelectPoint.bind(this));
+
+        this.colorPickerJQ.change(this._onColorPickerChanged.bind(this));
+    }
+
     _makePainterOptions() {
         return new PainterOptions();
     }
@@ -76,8 +83,17 @@ class ColormapInput extends CtfElementInput {
     // slots
     _onSelectPoint() {
         // TODO
-        debugger
         this.scene.repaint();
+        this.colorPickerJQ.attr("disabled", false)
+        this.relValNumbInpJQ.enable();
+
+        let scPoint = this.scene.getSelected();
+        let relVal = scPoint.x;
+        this.relValNumbInpJQ.setValue(relVal);
+        let interpolate = new CtfInterpolate(null, this.colormapPoints);
+        let rgb = interpolate.interpolateColor(relVal);
+        let str = rgb.toStringWithSharp();
+        this.colorPickerJQ.val(str);
     }
     _onRemovePoint() {
         // TODO
@@ -86,7 +102,6 @@ class ColormapInput extends CtfElementInput {
     }
     _onAddPoint() {
         // TODO
-        // debugger
         this.scene.repaint();
     }
     _onMovePoint() {
@@ -116,5 +131,9 @@ class ColormapInput extends CtfElementInput {
             this.colormapPoints[i] = sorted[i];
 
         this.scene.repaint();
+    }
+    _onColorPickerChanged() {
+        debugger
+        // TODO
     }
 }

@@ -3,6 +3,12 @@ class OpacityInput extends CtfElementInput {
         super($("#ctf-opacity-canvas"));
 
         let self = this;
+
+        this.relvalNumbInp = new objects.NumberInput($("#ctf-opacity-selected-relval"), "");
+        this.relvalNumbInp.disable();
+        this.opacityNumbInp = new objects.NumberInput($("#ctf-opacity-selected-opacity"), "");
+        this.opacityNumbInp.disable();
+
         this.scene.repaint();
         $("#ctf-opacity-remove-btn").click(e => self.scene.removeSelected());
         $("#ctf-opacity-setDefault-btn").click(e => self.setDefault());
