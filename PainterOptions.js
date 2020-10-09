@@ -2,7 +2,7 @@ class PainterOptions {
     constructor() {
         this.pointOptions = {
             normalColor: new Rgb(0, 0, 255),
-            selectedColor: new Rgb(100, 0, 0),
+            selectedColor: new Rgb(255, 255, 255),
             outRectSize: 10,
             fillNormal: true,
             fillSelected: true

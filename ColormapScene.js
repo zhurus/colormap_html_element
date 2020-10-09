@@ -42,9 +42,10 @@ class ColormapScene extends Scene {
         p.setMaxX(1);
         p.setFixedY(0.5);
 
-        this.selectedPointIdx = this.points.findIndex(point => point == p);
-        p.selected = true;
         this.dispatchEvent(new Event("create_point"));
+        // this.selectedPointIdx = this.points.findIndex(point => point == p);
+        // p.selected = true;
+        this.setSelected(p);
         return p;
     }
     repaint() {
@@ -66,6 +67,7 @@ class ColormapScene extends Scene {
                 p.setFixedX(1);
             this.addPoint(p);
         }, this);
+        this.dispatchEvent(new Event("set_default"));
     }
 
     _sort() {

@@ -3,20 +3,15 @@ class OpacityInput extends CtfElementInput {
         super($("#ctf-opacity-canvas"));
 
         let self = this;
+        this.scene.repaint();
         $("#ctf-opacity-remove-btn").click(e => self.scene.removeSelected());
         $("#ctf-opacity-setDefault-btn").click(e => self.setDefault());
 
-        this.scene.repaint();
-
-        this.scene.addEventListener("change", () => {
-            console.log("opacity change");      // debug
-            this.dispatchEvent(new Event("change"));
-        });
-        this.scene.addEventListener("input", () => {
-            console.log("opacity input");       // debug
-            this.dispatchEvent(new Event("input"));
-            this.scene.repaint();
-        });
+        this.scene.addEventListener("select_point", this._onSelectPoint.bind(this));
+        this.scene.addEventListener("add_point", this._onAddPoint.bind(this));
+        this.scene.addEventListener("move_point", this._onMovePoint.bind(this));
+        this.scene.addEventListener("remove_point", this._onRemovePoint.bind(this));
+        this.scene.addEventListener("create_point", this._onCreatePoint.bind(this));
     }
     attachColormapPoints(colormapPoints) {
         this.painter.attachColormapPoints(colormapPoints);
@@ -33,9 +28,7 @@ class OpacityInput extends CtfElementInput {
     }
     setDefault() {
         this.scene.setDefault();
-    }
-    attachInterpolator(colormapPoints) {
-        this.painter.attachColormapPoints(colormapPoints);
+        // TODO disable relative value and opacity text input
         this.scene.repaint();
     }
 
@@ -72,5 +65,27 @@ class OpacityInput extends CtfElementInput {
         mouseInterpreter.setScene(scene);
         mouseInterpreter.helper = helper;
         return mouseInterpreter;
+    }
+
+    // slots
+    _onSelectPoint() {
+        // TODO
+        this.scene.repaint();
+    }
+    _onRemovePoint() {
+        // TODO
+        this.scene.repaint();
+    }
+    _onAddPoint() {
+        // TODO
+        this.scene.repaint();
+    }
+    _onMovePoint() {
+        // TODO
+        this.scene.repaint();
+    }
+    _onCreatePoint() {
+        // TODO
+        this.scene.repaint();
     }
 }

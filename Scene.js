@@ -7,6 +7,9 @@ class Scene extends EventTarget {
         this.points = [];
         this.selectedPointIdx = -1;
     }
+    getSelected() {
+        return this.selectedPointIdx == -1? null : this.points[this.selectedPointIdx];
+    }
     setSelected(point) {
         this.selectedPointIdx = this.points.findIndex(p => point == p);
         point.selected = true;

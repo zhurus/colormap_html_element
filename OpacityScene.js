@@ -14,17 +14,37 @@ class OpacityScene extends Scene {
         this.fixedPnt2.setMaxY(1);
         this.addPoint(this.fixedPnt2);
     }
+    createPoint(x, y) {
+        if(x <= 0 || x >= 1)
+            return;
+        if(y < 0 || y > 1)
+            return
+        let point = new PointWithLimits(x, y);
+        point.setMinX(0);
+        point.setMaxX(1);
+        point.setMinY(0);
+        point.setMaxY(1);
+        
+        this.points.push(point);
+        this._sort();
+        this.dispatchEvent(new Event("create_point"));
+        this.setSelected(point);
+        return point;
+    }
     removeSelected() {
         if(this.selectedPointIdx != 0 && this.selectedPointIdx != this.points.length - 1)
             super.removeSelected();
     }
     setDefault() {
         this._sort();
+        if(this.selectedPointIdx != -1) {
+            this.points[this.selectedPointIdx].selected = false;
+            this.selectedPointIdx = -1;
+        }
         this.fixedPnt1.y = 1;
         this.fixedPnt2.y = 1;
         this.points.splice(1, this.points.length - 2);
-        this.dispatchEvent(new Event("change"));
-        this.dispatchEvent(new Event("input"));
+        this.dispatchEvent(new Event("set_default"));
     }
     repaint() {
         this.painter.clear();

@@ -10,19 +10,22 @@ class OpacityMouseInterpreter extends MouseInterpreter {
         this.selectedPoint = null;
         let p = this.scene.findByScreenCoordinates(x, y);
         if(!p) {
-            p = new PointWithLimits(
-                this.helper.coordinatesTransform.fromScreenX(x),
-                this.helper.coordinatesTransform.fromScreenY(y));
-            p.setMinX(0);
-            p.setMaxX(1);
-            p.setMinY(0);
-            p.setMaxY(1);
-            this.scene.addPoint(p);
-            this.scene.setSelected(p);            
+            let sceneX = this.helper.coordinatesTransform.fromScreenX(x);
+            let sceneY = this.helper.coordinatesTransform.fromScreenY(y);
+            // p = new PointWithLimits(
+            //     this.helper.coordinatesTransform.fromScreenX(x),
+            //     this.helper.coordinatesTransform.fromScreenY(y));
+            // p.setMinX(0);
+            // p.setMaxX(1);
+            // p.setMinY(0);
+            // p.setMaxY(1);
+            // this.scene.addPoint(p);
+            // this.scene.setSelected(p);            
+            p = this.scene.createPoint(sceneX, sceneY);
         } else {
             this.scene.setSelected(p);
+            this.scene.repaint();
         }
-        this.scene.repaint();
         this.selectedPoint = p;
         this.draggedPoint = p;
     }

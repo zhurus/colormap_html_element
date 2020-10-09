@@ -93,6 +93,7 @@ class ColormapInput extends CtfElementInput {
         // TODO
         debugger
         this.scene.repaint();
+        this.dispatchEvent(new Event("input"));
     }
     _onCreatePoint() {
         let interpolate = new CtfInterpolate(null, this.colormapPoints);
