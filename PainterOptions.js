@@ -1,6 +1,6 @@
 class PainterOptions {
     constructor() {
-        // this.backgroundColor = new Rgb(255, 255, 255);
+        this.linesColor = new Rgb(0, 100, 0);
         this.pointOptions = {
             normalColor: new Rgb(0, 0, 0),
             selectedColor: new Rgb(0, 0, 0),
@@ -17,5 +17,11 @@ class PainterOptions {
         };
         this.nColormapRegions = 700;
         this.textOptions = new TextOptions();
+    }
+    setDominantColor(rgb) {
+        this.linesColor = rgb;
+        this.pointOptions.normalColor = rgb;
+        this.pointOptions.selectedColor = rgb;
+        this.textOptions.color = rgb;
     }
 }

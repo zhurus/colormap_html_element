@@ -10,6 +10,10 @@ class CtfElementInput extends EventTarget {
         this.scene = this._makeScene(this.canvas, this.painter, this.helper);
         this.mouseInterpreter = this._makeMouseInterpreter(this.canvas, this.scene, this.helper);
     }
+    setBackgroundColor(rgb) {
+        this.painter.setBackgroundColor(rgb);
+        this.scene.repaint();
+    }
 
     // private
     _makePainterOptions() {

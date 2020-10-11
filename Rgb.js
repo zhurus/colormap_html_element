@@ -8,7 +8,6 @@ class Rgb {
         return `rgb(${this.r},${this.g},${this.b})`;
     }
     toStringWithSharp() {
-        // return `#${Number(this.r).toString(16)}${Number(this.g).toString(16)}${Number(this.b).toString(16)}`;
         let r = Math.round(this.r).toString(16);
         if(r.length == 1)   
             r = `0${r}`;
@@ -21,6 +20,13 @@ class Rgb {
         if(b.length == 1)   
             b = `0${b}`;
         return `#${r}${g}${b}`;
+    }
+    lengthTo(other) {
+        return Math.sqrt(
+            (other.r - this.r) * (other.r - this.r) + 
+            (other.g - this.g) * (other.g - this.g) + 
+            (other.b - this.b) * (other.b - this.b)
+        );
     }
     static fromStringWithSharp(string) {
         let r = Number("0x" + string.slice(1,3));

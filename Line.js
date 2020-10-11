@@ -16,7 +16,7 @@ class Line {
 class GraphicsLine extends Line {
     constructor(point1, point2) {
         super(point1, point2);
-        this.color = new Rgb();
+        this.color = null;
         this.opacity = 1;
         this.thickness = 1;
     }

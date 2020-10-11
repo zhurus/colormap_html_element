@@ -35,7 +35,7 @@ class OpacityPainter extends Painter {
         context.lineTo(x2, y2);
         context.lineTo(yAxleEnd.x, yAxleEnd.y);
         context.closePath();
-        context.fillStyle = "black";
+        context.fillStyle = this.painterOptions.linesColor.toString();
         context.fill();
     }
     _drawLabels() {
@@ -59,7 +59,7 @@ class OpacityPainter extends Painter {
             let p1 = new Point(x1, y);
             let p2 = new Point(x2, y);
             let l = new GraphicsLine(p1, p2);
-            this.canvas.drawLine(l);
+            this.drawLine(l);
 
             this.drawText(
                 Number(i).toPrecision(2),
@@ -86,7 +86,8 @@ class OpacityPainter extends Painter {
             let p1 = new Point(x, y1);
             let p2 = new Point(x, y2);
             let l = new GraphicsLine(p1, p2);
-            this.canvas.drawLine(l);
+            l.color = this.painterOptions.linesColor;
+            this.drawLine(l);
 
             this.drawText(
                 Number(i).toPrecision(1),
