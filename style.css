@@ -12,9 +12,6 @@
     flex-grow: 0;
 }
 
-canvas {
-    background-color: rgb(255, 255, 255);
-}
 
 #ctf-opacity {
     display: flex;
