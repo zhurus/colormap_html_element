@@ -69,6 +69,9 @@ class ColormapScene extends Scene {
         }, this);
         this.dispatchEvent(new Event("set_default"));
     }
+    findByScreenCoordinates(x, y) {
+        return super.findByScreenCoordinates(x, this.helper.toScreenY(0.5));
+    }
 
     _sort() {
         this.points.sort((p1, p2) => p1.x - p2.x);

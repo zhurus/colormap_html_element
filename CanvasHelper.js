@@ -17,4 +17,7 @@ class CanvasHelper {
     fromScreenY(y) {
         return this.coordinatesTransform.fromScreenY(y);
     }
+    toScreenY(y) {
+        return this.coordinatesTransform.toScreenY(y);
+    }
 }
