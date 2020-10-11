@@ -2,22 +2,9 @@ class OpacityInput extends CtfElementInput {
     constructor() {
         super($("#ctf-opacity-canvas"));
 
-        let self = this;
-
         this.relvalNumbInp = new objects.NumberInput($("#ctf-opacity-selected-relval"), "");
-        this.relvalNumbInp.disable();
         this.opacityNumbInp = new objects.NumberInput($("#ctf-opacity-selected-opacity"), "");
-        this.opacityNumbInp.disable();
-
-        this.scene.repaint();
-        $("#ctf-opacity-remove-btn").click(e => self.scene.removeSelected());
-        $("#ctf-opacity-setDefault-btn").click(e => self.setDefault());
-
-        this.scene.addEventListener("select_point", this._onSelectPoint.bind(this));
-        this.scene.addEventListener("add_point", this._onAddPoint.bind(this));
-        this.scene.addEventListener("move_point", this._onMovePoint.bind(this));
-        this.scene.addEventListener("remove_point", this._onRemovePoint.bind(this));
-        this.scene.addEventListener("create_point", this._onCreatePoint.bind(this));
+        this._init();
     }
     attachColormapPoints(colormapPoints) {
         this.painter.attachColormapPoints(colormapPoints);
@@ -27,18 +14,48 @@ class OpacityInput extends CtfElementInput {
         return this.scene.points.map(sp => new OpacityPoint(sp.x, sp.y));
     }
     setPoints(points) {
-        this.opacityPoints = points;
+        this.scene.clear();
         points.forEach(p => {
-            this.scene.addPoint(new PointWithLimits(p.x, p.y));
+            this.scene.addPoint(new PointWithLimits(p.relativeVal, p.opacity));
         });
+        
+        this.relvalNumbInp.reset();
+        this.opacityNumbInp.reset();
+
+        this.relvalNumbInp.disable();
+        this.opacityNumbInp.disable();        
     }
     setDefault() {
+        this.relvalNumbInp.reset();
+        this.opacityNumbInp.reset();
+
+        this.relvalNumbInp.disable();
+        this.opacityNumbInp.disable();
+
         this.scene.setDefault();
-        // TODO disable relative value and opacity text input
+        
+        this.painter.attachOpacityPoints(this.getPoints());
         this.scene.repaint();
+        this.dispatchEvent(new Event("change"));
     }
 
     //private
+    _init() {
+        this.relvalNumbInp.disable();
+        this.opacityNumbInp.disable();
+
+        this.scene.repaint();
+        
+        let self = this;
+        $("#ctf-opacity-remove-btn").click(e => self.scene.removeSelected());
+        $("#ctf-opacity-setDefault-btn").click(e => self.setDefault());
+
+        this.scene.addEventListener("select_point", this._onSelectPoint.bind(this));
+        this.scene.addEventListener("add_point", this._onAddPoint.bind(this));
+        this.scene.addEventListener("move_selected", this._onMovePoint.bind(this));
+        this.scene.addEventListener("remove_point", this._onRemovePoint.bind(this));
+        this.scene.addEventListener("create_point", this._onCreatePoint.bind(this));
+    }
     _makeCoordinateTransform(canvas) {
         let coodrdsTransform = super._makeCoordinateTransform(canvas);
         // coodrdsTransform.margin.right = 20;
@@ -75,23 +92,43 @@ class OpacityInput extends CtfElementInput {
 
     // slots
     _onSelectPoint() {
-        // TODO
+        let selectedPt = this.scene.getSelected();
+
+        this.relvalNumbInp.setValue(selectedPt.x);
+        this.opacityNumbInp.setValue(selectedPt.y);
+
+        this.relvalNumbInp.enable();
+        this.opacityNumbInp.enable();
+
         this.scene.repaint();
     }
     _onRemovePoint() {
-        // TODO
+        this.relvalNumbInp.reset();
+        this.opacityNumbInp.reset();
+
+        this.relvalNumbInp.disable();
+        this.opacityNumbInp.disable();
+        this.painter.attachOpacityPoints(this.getPoints());
+        
         this.scene.repaint();
+
+        this.dispatchEvent(new Event("change"));
     }
     _onAddPoint() {
-        // TODO
+        this.painter.attachOpacityPoints(this.getPoints());
+
         this.scene.repaint();
+        this.dispatchEvent(new Event("change"));
     }
     _onMovePoint() {
-        // TODO
+        let selectedPt = this.scene.getSelected();
+        this.opacityNumbInp.setValue(selectedPt.y);
+        this.relvalNumbInp.setValue(selectedPt.x);
+        this.painter.attachOpacityPoints(this.getPoints());
         this.scene.repaint();
     }
     _onCreatePoint() {
-        // TODO
+        this.painter.attachOpacityPoints(this.getPoints());
         this.scene.repaint();
     }
 }

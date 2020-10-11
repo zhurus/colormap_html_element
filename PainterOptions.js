@@ -14,7 +14,7 @@ class PainterOptions {
             labelsStepX: 0.2,
             labelsStepY: 0.25
         };
-        this.nColormapRegions = 900;
+        this.nColormapRegions = 540;
         this.textOptions = new TextOptions();
     }
 }

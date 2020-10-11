@@ -5,6 +5,9 @@ class OpacityPainter extends Painter {
     attachColormapPoints(colormapPoints) {
         this.interpolate.attachColormapPoints(colormapPoints);
     }
+    attachOpacityPoints(opacityPoints) {
+        this.interpolate.attachOpacityPoints(opacityPoints);
+    }
     drawCoordinateSystem() {
         this._drawColormap();
         this._drawAxles();
@@ -98,9 +101,10 @@ class OpacityPainter extends Painter {
         let step = this.coordinatesTransform.width / nRegions;
         let x;
         for(x = 0 + step / 2; x <= 1; x += step) {
+            let y = this.interpolate.interpolateOpacity(x);
             let l = new GraphicsLine(
                 new Point(x, 0),
-                new Point(x, 1)
+                new Point(x, y)
             );
             l.thickness = this.coordinatesTransform.toScreenSizeX(step);
             l.color = this.interpolate.interpolateColor(

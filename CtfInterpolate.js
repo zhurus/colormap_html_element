@@ -14,6 +14,8 @@ class CtfInterpolate {
             this.colormapPoints = colormapPoints.sort((cp1, cp2) => cp1.relativeVal - cp2.relativeVal);
     }
     interpolateOpacity(relVal) {
+        if(!this.opacityPoints)
+            return;
         if(this.opacityPoints.length == 1)
             return this.opacityPoints[0].opacity;
         
