@@ -33,7 +33,15 @@ class ColormapInput extends CtfElementInput {
         
         this.painter.attachColormapPoints(colormapPoints);
         this.selectedPair = null;
+
+        this.colorPickerJQ.attr("disabled", true);
+        this.relValNumbInp.disable();
+        this.relValNumbInp.reset();
+
+        this.selectedPair = null;
+
         this.scene.repaint();
+        this.dispatchEvent(new Event("change"));
     }
     getPoints() {
         return this.pairs.map(connection => connection.colormapPoint);
@@ -41,10 +49,13 @@ class ColormapInput extends CtfElementInput {
     setDefault() {
         this.colorPickerJQ.attr("disabled", true);
         this.relValNumbInp.disable();
+        this.relValNumbInp.reset();
 
         let ctf = new Ctf();
         ctf.setDefault();
         this.setPoints(ctf.colormapPoints);
+
+        this.selectedPair = null;
     }
     
     // private
@@ -63,6 +74,7 @@ class ColormapInput extends CtfElementInput {
         this.scene.addEventListener("select_point", this._onSelectPoint.bind(this));
 
         this.colorPickerJQ.change(this._onColorPickerChanged.bind(this));
+        this.relValNumbInp.addEventListener("change", this._onRelativeValInputChanged.bind(this));
     }
 
     _makePainterOptions() {
@@ -119,13 +131,21 @@ class ColormapInput extends CtfElementInput {
         this.pairs.splice(idx, 1);
         this.painter.attachColormapPoints(this.getPoints());
         this.scene.repaint();
+
+        this.colorPickerJQ.attr("disabled", true);
+        this.relValNumbInp.disable();
+        this.relValNumbInp.reset();
+        this.dispatchEvent(new Event("change"));
     }
     _onAddPoint() {
         this.scene.repaint();
+        this.dispatchEvent(new Event("change"));
     }
     _onMovePoint() {
         this.selectedPair.xChanged();
+        this.relValNumbInp.setValue(this.selectedPair.scenePoint.x);
         this.scene.repaint();
+        this.dispatchEvent(new Event("change"));
     }
     _onCreatePoint() {
         let currColormapPts = this.getPoints();
@@ -143,9 +163,18 @@ class ColormapInput extends CtfElementInput {
         this.painter.attachColormapPoints(this.getPoints());
         
         this.scene.repaint();
+        this.dispatchEvent(new Event("change"));
     }
     _onColorPickerChanged() {
         this.selectedPair.colormapPoint.rgb = Rgb.fromStringWithSharp(this.colorPickerJQ.val());
+
         this.scene.repaint();
+        this.dispatchEvent(new Event("change"));
+    }
+    _onRelativeValInputChanged() {
+        let newVal = this.relValNumbInp.getValue();
+        this.scene.moveSelected(newVal, 0.5);
+        newVal = this.selectedPair.scenePoint.x;
+        this.relValNumbInp.setValue(newVal);
     }
 }
