@@ -55,6 +55,9 @@ class OpacityInput extends CtfElementInput {
         this.scene.addEventListener("move_selected", this._onMovePoint.bind(this));
         this.scene.addEventListener("remove_point", this._onRemovePoint.bind(this));
         this.scene.addEventListener("create_point", this._onCreatePoint.bind(this));
+
+        this.relvalNumbInp.addEventListener("change", this._onAnyInputChanged.bind(this));
+        this.opacityNumbInp.addEventListener("change", this._onAnyInputChanged.bind(this));
     }
     _makeCoordinateTransform(canvas) {
         let coodrdsTransform = super._makeCoordinateTransform(canvas);
@@ -130,5 +133,22 @@ class OpacityInput extends CtfElementInput {
     _onCreatePoint() {
         this.painter.attachOpacityPoints(this.getPoints());
         this.scene.repaint();
+    }
+    _onAnyInputChanged() {
+        let selectedPt = this.scene.getSelected();
+        if(!this.relvalNumbInp.isCompleted()) {
+            this.relvalNumbInp.setValue(selectedPt.x);
+            return;
+        }
+        if(!this.opacityNumbInp.isCompleted()) {
+            this.opacityNumbInp.setValue(selectedPt.y);
+            return;
+        }
+        let x = this.relvalNumbInp.getValue();
+        let y = this.opacityNumbInp.getValue();
+        this.scene.moveSelected(x, y);
+        
+        this.relvalNumbInp.setValue(selectedPt.x);
+        this.opacityNumbInp.setValue(selectedPt.y);
     }
 }
