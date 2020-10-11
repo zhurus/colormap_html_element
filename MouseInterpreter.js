@@ -15,7 +15,6 @@ class MouseInterpreter {
         jquery.mouseover(e => self.mousein = true);
         jquery.mouseleave(e => self.mousein = false);
         jquery.mousedown(e => {
-            // debugger
             this.canvasPosition = {
                 top: e.pageY - e.offsetY,
                 left: e.pageX - e.offsetX
@@ -34,7 +33,6 @@ class MouseInterpreter {
             self.onMouseReleased(x, y);
         });
         $(document).mousemove(e => {
-            // debugger
             if(!this.mouseClicked)
                 return false;
             let pos = this.canvasPosition;

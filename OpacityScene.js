@@ -20,15 +20,19 @@ class OpacityScene extends Scene {
         {
             if(this.points.length != 0 && this.points[0].x == 0)
                 return;
-            else
+            else {
                 point.setFixedX(0);
+                this.fixedPnt1 = point;
+            }
         }
         else if(point.x == 1) 
         {
             if(this.points.length != 0 && this.points[this.points.length-1].x == 1)
                 return;
-            else
+            else {
                 point.setFixedX(1);
+                this.fixedPnt2 = point;
+            }
         }
         else 
         {
