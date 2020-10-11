@@ -172,6 +172,10 @@ class ColormapInput extends CtfElementInput {
         this.dispatchEvent(new Event("change"));
     }
     _onRelativeValInputChanged() {
+        if(!this.relValNumbInp.isCompleted()) {
+            this.relValNumbInp.setValue(this.selectedPair.scenePoint.x);
+            return;
+        }
         let newVal = this.relValNumbInp.getValue();
         this.scene.moveSelected(newVal, 0.5);
         newVal = this.selectedPair.scenePoint.x;
