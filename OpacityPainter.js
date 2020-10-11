@@ -107,6 +107,7 @@ class OpacityPainter extends Painter {
                 new Point(x, y)
             );
             l.thickness = this.coordinatesTransform.toScreenSizeX(step);
+            l.opacity = y;
             l.color = this.interpolate.interpolateColor(
                 x / this.coordinatesTransform.width);
             this.drawLine(l);

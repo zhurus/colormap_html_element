@@ -10,6 +10,12 @@ class Canvas {
 
         this.helper = null; 
     }
+    setBackgroundColor(rgb) {
+        let r = rgb.r;
+        let g = rgb.g;
+        let b = rgb.b;
+        this.jquery.css("backgroundColor",`rgb(${r},${g},${b})`);
+    }
     drawRect(rect) {
         if(rect instanceof FilledRect) {
             this.context.fillStyle = rect.color.toString();
@@ -22,6 +28,7 @@ class Canvas {
     drawLine(line) {
         if(line instanceof GraphicsLine) {
             this.context.strokeStyle = line.color.toString();
+            this.context.globalAlpha = line.opacity;
             this.context.beginPath();
             this.context.moveTo(line.point1.x, line.point1.y);
             this.context.lineTo(line.point2.x, line.point2.y);

@@ -17,12 +17,14 @@ class GraphicsLine extends Line {
     constructor(point1, point2) {
         super(point1, point2);
         this.color = new Rgb();
+        this.opacity = 1;
         this.thickness = 1;
     }
     copy() {
         let c = super.copy();
         c.color = this.color;
         c.thickness = this.thickness;
+        c.opacity = this.opacity;
         return c;
     }
 }

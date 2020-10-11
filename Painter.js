@@ -8,6 +8,9 @@ class Painter {
     attachColormapPoints(points) {
         this.interpolate.attachColormapPoints(points)
     }
+    setBackgroundColor(rgb) {
+        this.canvas.setBackgroundColor(rgb);
+    }
     drawPoint(point) {
         let width = this.painterOptions.pointOptions.outRectSize;
         let height = width;
@@ -16,7 +19,7 @@ class Painter {
         let rect;
         if(!point.selected) {
             let toFill = this.painterOptions.pointOptions.fillSelected;
-            if(toFill)
+            if(!toFill)
                 rect = new FilledRect(x, y, width, height);
             else
                 rect = new StrokeRect(x, y, width, height);
@@ -24,7 +27,7 @@ class Painter {
         }
         else {
             let toFill = this.painterOptions.pointOptions.fillNormal;
-            if(toFill)
+            if(!toFill)
                 rect = new FilledRect(x, y, width, height);
             else
                 rect = new StrokeRect(x, y, width, height);
