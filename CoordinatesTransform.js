@@ -6,7 +6,7 @@ class CoordinatesTransform {
             top: 30,
             bottom: 25,
             left: 40,
-            right: 20
+            right: 10
         };
 
         this.width = 1;

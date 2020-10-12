@@ -9,7 +9,7 @@ class PainterOptions {
             fillSelected: true
         };
         this.axles = {
-            xAxleLength: 1.05,
+            xAxleLength: 1.01,
             yAxleLength: 1.05,
             arrowEndSize: 10,
             labelsStepX: 0.2,

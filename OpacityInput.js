@@ -61,7 +61,7 @@ class OpacityInput extends CtfElementInput {
     }
     _makeCoordinateTransform(canvas) {
         let coodrdsTransform = super._makeCoordinateTransform(canvas);
-        // coodrdsTransform.margin.right = 20;
+        coodrdsTransform.setMarginTop(10);
         return coodrdsTransform;
     }
     _makeHelper(coordinatesTransform, painterOptions) {
@@ -69,7 +69,8 @@ class OpacityInput extends CtfElementInput {
     }
     _makePainterOptions() {
         let po = new PainterOptions();
-        po.axles.yAxleLength = 1.2;
+        po.axles.yAxleLength = 1.01;
+        // po.axles.
         return po;
     }
     _makePainter(canvas, coordinatesTransform, painterOptions) {
